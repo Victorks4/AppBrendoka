@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,9 +24,8 @@
                 android:layout_height="120dp"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/ic_person"
-                android:background="@color/primary">
-
-            </com.google.android.material.imageview.ShapeableImageView>
+                android:background="?attr/colorPrimary"
+                app:tint="?attr/colorOnPrimary"/>
 
             <TextView
                 android:id="@+id/txtNomePerfil"
@@ -35,8 +35,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="16dp"
                 android:text="Nome do Usuário"
-                android:textSize="24sp"
-                android:textColor="@color/text_primary"/>
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="?attr/colorOnBackground"/>
 
             <TextView
                 android:id="@+id/txtEmailPerfil"
@@ -46,29 +46,30 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="4dp"
                 android:text="email@exemplo.com"
-                android:textColor="@color/text_secondary"/>
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"/>
         </RelativeLayout>
 
-        <!-- Seções do Perfil -->
+        <!-- Card de Informações -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:cardElevation="2dp"
-            app:cardCornerRadius="8dp">
+            app:cardCornerRadius="8dp"
+            style="@style/Widget.Material3.CardView.Elevated">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Informações Pessoais -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Informações Pessoais"
-                    android:textSize="18sp"
-                    android:textColor="@color/text_primary"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnSurface"
                     android:layout_margin="16dp"/>
 
                 <!-- Nome Completo -->
@@ -82,14 +83,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Nome Completo"
-                        android:textColor="@color/text_secondary"/>
+                        android:textColor="?attr/colorOnSurfaceVariant"/>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Nome do Usuário"
                         android:textAlignment="textEnd"
-                        android:textColor="@color/text_primary"/>
+                        android:textColor="?attr/colorOnSurface"/>
                 </LinearLayout>
 
                 <!-- Telefone -->
@@ -103,14 +104,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Telefone"
-                        android:textColor="@color/text_secondary"/>
+                        android:textColor="?attr/colorOnSurfaceVariant"/>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="(00) 00000-0000"
                         android:textAlignment="textEnd"
-                        android:textColor="@color/text_primary"/>
+                        android:textColor="?attr/colorOnSurface"/>
                 </LinearLayout>
 
                 <!-- CEP -->
@@ -124,14 +125,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="CEP"
-                        android:textColor="@color/text_secondary"/>
+                        android:textColor="?attr/colorOnSurfaceVariant"/>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="00000-000"
                         android:textAlignment="textEnd"
-                        android:textColor="@color/text_primary"/>
+                        android:textColor="?attr/colorOnSurface"/>
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -144,5 +145,6 @@
             android:text="Editar Perfil"
             android:layout_marginTop="16dp"
             app:cornerRadius="8dp"/>
+
     </LinearLayout>
 </ScrollView>

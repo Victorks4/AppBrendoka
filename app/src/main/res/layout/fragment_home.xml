@@ -22,7 +22,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 app:cardElevation="4dp"
-                app:cardCornerRadius="8dp">
+                app:cardCornerRadius="8dp"
+                style="@style/Widget.Material3.CardView.Elevated">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -34,25 +35,26 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Bem-vindo!"
-                        android:textSize="24sp"
-                        android:textColor="@color/text_primary"/>
+                        android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                        android:textColor="?attr/colorOnSurface"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="O que você gostaria de fazer hoje?"
-                        android:textColor="@color/text_secondary"/>
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Cards de Ações Rápidas -->
+            <!-- Título Ações Rápidas -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ações Rápidas"
-                android:textSize="18sp"
-                android:textColor="@color/text_primary"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                android:textColor="?attr/colorOnBackground"
                 android:layout_marginBottom="8dp"/>
 
             <GridLayout
@@ -61,14 +63,15 @@
                 android:columnCount="2"
                 android:rowCount="2">
 
-                <!-- Ação 1 -->
+                <!-- Ação 1: Meu Perfil -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_margin="8dp"
                     app:cardElevation="2dp"
-                    app:cardCornerRadius="8dp">
+                    app:cardCornerRadius="8dp"
+                    style="@style/Widget.Material3.CardView.Filled">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -80,25 +83,27 @@
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:src="@drawable/ic_person"
-                            app:tint="@color/primary" />
+                            app:tint="?attr/colorPrimary" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:text="Meu Perfil"
-                            android:textColor="@color/text_primary"/>
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="?attr/colorOnSurface"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Ação 2 -->
+                <!-- Ação 2: Configurações -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_margin="8dp"
                     app:cardElevation="2dp"
-                    app:cardCornerRadius="8dp">
+                    app:cardCornerRadius="8dp"
+                    style="@style/Widget.Material3.CardView.Filled">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -110,16 +115,18 @@
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:src="@drawable/ic_settings"
-                            app:tint="@color/primary" />
+                            app:tint="?attr/colorPrimary" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:text="Configurações"
-                            android:textColor="@color/text_primary"/>
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="?attr/colorOnSurface"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+
             </GridLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

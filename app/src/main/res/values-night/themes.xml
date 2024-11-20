@@ -1,20 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Tema escuro -->
     <style name="Theme.AppProject05" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Cores primárias -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary_dark</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
 
         <!-- Cores secundárias -->
         <item name="colorSecondary">@color/secondary</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSecondary">@color/white</item>
 
         <!-- Cores de fundo -->
         <item name="android:colorBackground">@color/background</item>
         <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/white</item>
 
         <!-- Status bar e navegação -->
-        <item name="android:statusBarColor">@color/primary_dark</item>
+        <item name="android:statusBarColor">@color/surface</item>
+        <item name="android:windowLightStatusBar">false</item>
         <item name="android:navigationBarColor">@color/surface</item>
+
+        <!-- TextInputLayout customização -->
+        <item name="textInputStyle">@style/Widget.App.TextInputLayout</item>
     </style>
 </resources>

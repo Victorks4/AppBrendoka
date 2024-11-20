@@ -55,10 +55,8 @@
                     android:layout_marginBottom="16dp"
                     android:hint="Nome Completo"
                     app:startIconDrawable="@drawable/ic_person"
-                    app:startIconTint="#1E3A8A"
-                    app:boxStrokeColor="#1E3A8A"
-                    app:hintTextColor="#1E3A8A"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    app:startIconTint="?attr/colorPrimary"
+                    style="@style/Widget.App.TextInputLayout">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edtNome"
@@ -74,16 +72,50 @@
                     android:layout_marginBottom="16dp"
                     android:hint="Email"
                     app:startIconDrawable="@drawable/ic_email"
-                    app:startIconTint="#1E3A8A"
-                    app:boxStrokeColor="#1E3A8A"
-                    app:hintTextColor="#1E3A8A"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    app:startIconTint="?attr/colorPrimary"
+                    style="@style/Widget.App.TextInputLayout">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edtEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textEmailAddress"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Senha -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Senha"
+                    app:startIconDrawable="@drawable/ic_person"
+                    app:startIconTint="?attr/colorPrimary"
+                    app:endIconMode="password_toggle"
+                    style="@style/Widget.App.TextInputLayout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtSenha"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Confirmar Senha -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Confirmar Senha"
+                    app:startIconDrawable="@drawable/ic_person"
+                    app:startIconTint="?attr/colorPrimary"
+                    app:endIconMode="password_toggle"
+                    style="@style/Widget.App.TextInputLayout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtConfirmarSenha"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Telefone -->
@@ -93,10 +125,8 @@
                     android:layout_marginBottom="16dp"
                     android:hint="Telefone"
                     app:startIconDrawable="@drawable/ic_phone"
-                    app:startIconTint="#1E3A8A"
-                    app:boxStrokeColor="#1E3A8A"
-                    app:hintTextColor="#1E3A8A"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    app:startIconTint="?attr/colorPrimary"
+                    style="@style/Widget.App.TextInputLayout">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edtTelefone"
@@ -109,13 +139,11 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="32dp"
+                    android:layout_marginBottom="24dp"
                     android:hint="CEP"
                     app:startIconDrawable="@drawable/ic_location"
-                    app:startIconTint="#1E3A8A"
-                    app:boxStrokeColor="#1E3A8A"
-                    app:hintTextColor="#1E3A8A"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    app:startIconTint="?attr/colorPrimary"
+                    style="@style/Widget.App.TextInputLayout">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edtCep"
@@ -133,12 +161,9 @@
                     android:text="CADASTRAR"
                     android:textStyle="bold"
                     android:textSize="16sp"
-                    android:backgroundTint="#1E3A8A"
-                    app:cornerRadius="12dp"
-                    android:elevation="4dp"/>
+                    app:cornerRadius="12dp"/>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
     </LinearLayout>
 </ScrollView>

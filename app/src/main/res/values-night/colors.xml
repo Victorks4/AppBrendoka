@@ -5,22 +5,22 @@
     <color name="white">#FFFFFFFF</color>
 
     <!-- Cores primárias -->
-    <color name="primary">#60A5FA</color>      <!-- Versão mais clara do azul original -->
+    <color name="primary">#60A5FA</color> <!-- Versão mais clara do azul original -->
     <color name="primary_dark">#3B82F6</color> <!-- Azul médio para melhor visibilidade -->
-    <color name="secondary">#93C5FD</color>    <!-- Azul mais suave para elementos secundários -->
+    <color name="secondary">#93C5FD</color> <!-- Azul mais suave para elementos secundários -->
 
     <!-- Cores de fundo -->
-    <color name="background">#121212</color>   <!-- Fundo padrão Material Dark -->
-    <color name="surface">#1E1E1E</color>      <!-- Superfície dos componentes -->
+    <color name="background">#121212</color> <!-- Fundo padrão Material Dark -->
+    <color name="surface">#1E1E1E</color> <!-- Superfície dos componentes -->
 
     <!-- Cores de texto -->
     <color name="text_primary">#E2E8F0</color> <!-- Texto principal mais claro -->
     <color name="text_secondary">#94A3B8</color> <!-- Texto secundário suavizado -->
 
     <!-- Cores de status -->
-    <color name="error">#FCA5A5</color>        <!-- Vermelho mais suave -->
-    <color name="success">#86EFAC</color>      <!-- Verde mais suave -->
+    <color name="error">#FCA5A5</color> <!-- Vermelho mais suave -->
+    <color name="success">#86EFAC</color> <!-- Verde mais suave -->
 
     <!-- Cor para divisores -->
-    <color name="divider">#2D3748</color>      <!-- Divisor mais escuro -->
+    <color name="divider">#2D3748</color> <!-- Divisor mais escuro -->
 </resources>

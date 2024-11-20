@@ -19,7 +19,7 @@ public class TelaInicial extends AppCompatActivity {
         btnCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(TelaInicial.this, tela2.class));
+                startActivity(new Intent(TelaInicial.this, TelaCadastro.class));
             }
         });
 
@@ -28,7 +28,7 @@ public class TelaInicial extends AppCompatActivity {
             public void onClick(View v) {
                 // Aqui você pode adicionar a navegação para uma tela de login
                 // Por enquanto vamos só mostrar a tela de cadastro
-                startActivity(new Intent(TelaInicial.this, tela2.class));
+                startActivity(new Intent(TelaInicial.this, TelaCadastro.class));
             }
         });
     }

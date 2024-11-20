@@ -39,7 +39,7 @@
             android:theme="@style/Theme.AppProject05" />
 
         <activity
-            android:name=".tela2"
+            android:name=".TelaCadastro"
             android:exported="false"
             android:theme="@style/Theme.AppProject05" />
     </application>
