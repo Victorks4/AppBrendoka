@@ -43,10 +43,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                // Navegar para a próxima tela após a animação
-                Intent intent = new Intent(MainActivity.this, tela2.class);
-                startActivity(intent);
-                finish(); // Finaliza a atividade atual
+                // Navegar para a TelaInicial ao invés da tela2
+                startActivity(new Intent(MainActivity.this, TelaInicial.class));
+                finish();
             }
 
             @Override
