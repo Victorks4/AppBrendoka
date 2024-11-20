@@ -2,10 +2,10 @@ package com.example.appproject05;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -18,43 +18,50 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        try {
+            EdgeToEdge.enable(this);
+            setContentView(R.layout.activity_main);
 
-        // Ajuste de padding para lidar com as barras do sistema
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+            // Ajuste de padding para lidar com as barras do sistema
+            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                return insets;
+            });
 
-        // Referência para o ImageView (Ícone que será animado)
-        Img = findViewById(R.id.Icon);
+            // Referência para o ImageView (Ícone que será animado)
+            Img = findViewById(R.id.Icon);
 
-        // Carregar a animação definida em XML (zoom_fade.xml)
-        Animation zoomFade = AnimationUtils.loadAnimation(this, R.anim.zoom_fade);
+            // Carregar a animação definida em XML (zoom_fade.xml)
+            Animation zoomFade = AnimationUtils.loadAnimation(this, R.anim.zoom_fade);
 
-        // Adicionar listener para detectar o fim da animação
-        zoomFade.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                // Opcional: Código a executar quando a animação começa
-            }
+            // Adicionar listener para detectar o fim da animação
+            zoomFade.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    // Opcional: Código a executar quando a animação começa
+                }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                // Navegar para a TelaInicial ao invés da tela2
-                startActivity(new Intent(MainActivity.this, TelaInicial.class));
-                finish();
-            }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    // Navegar para a TelaLogin ao invés da TelaInicial
+                    Intent intent = new Intent(MainActivity.this, TelaLogin.class);
+                    startActivity(intent);
+                    finish();
+                }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-                // Opcional: Código para animações que se repetem
-            }
-        });
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    // Opcional: Código para animações que se repetem
+                }
+            });
 
-        // Iniciar a animação
-        Img.startAnimation(zoomFade);
+            // Iniciar a animação
+            Img.startAnimation(zoomFade);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("MainActivity", "Erro: " + e.getMessage());
+        }
     }
 }

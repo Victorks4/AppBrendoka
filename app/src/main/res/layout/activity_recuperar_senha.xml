@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:id="@+id/imgLogo"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="48dp"
+            android:src="@drawable/logo"
+            android:contentDescription="Logo do aplicativo"/>
+
+        <TextView
+            android:id="@+id/txtRecuperarSenha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recuperar Senha"
+            android:textSize="24sp"
+            android:textColor="@color/text_primary"
+            android:layout_marginTop="24dp"
+            android:fontFamily="sans-serif-medium"/>
+
+        <TextView
+            android:id="@+id/txtInstrucoes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Digite seu email para receber instruções de recuperação de senha"
+            android:textAlignment="center"
+            android:textColor="@color/text_secondary"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            style="@style/Widget.App.TextInputLayout"
+            android:hint="Email">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtEmailRecuperacao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEnviarRecuperacao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Enviar"
+            app:cornerRadius="8dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnVoltar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Voltar"
+            style="@style/Widget.Material3.Button.TextButton"/>
+
+    </LinearLayout>
+</ScrollView>

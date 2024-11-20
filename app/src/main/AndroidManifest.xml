@@ -15,7 +15,8 @@
 
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.AppProject05">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -23,12 +24,23 @@
         </activity>
 
         <activity
-            android:name=".TelaInicial"
-            android:exported="false" />
+            android:name=".TelaLogin"
+            android:exported="false"
+            android:theme="@style/Theme.AppProject05" />
+
+        <activity
+            android:name=".TelaPrincipal"
+            android:exported="false"
+            android:theme="@style/Theme.AppProject05" />
+
+        <activity
+            android:name=".TelaRecuperarSenha"
+            android:exported="false"
+            android:theme="@style/Theme.AppProject05" />
 
         <activity
             android:name=".tela2"
-            android:exported="false" />
-
+            android:exported="false"
+            android:theme="@style/Theme.AppProject05" />
     </application>
 </manifest>
