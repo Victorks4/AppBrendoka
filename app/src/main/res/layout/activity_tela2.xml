@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".tela2">
+
+
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/txtCadastro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cadastro de Usuário"
+        android:textSize="24sp"
+        android:textColor="#1E3A8A"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="50dp"/>
+
+    <!-- Nome Completo -->
+    <TextView
+        android:id="@+id/txtNome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nome Completo"
+        android:textSize="16sp"
+        android:textColor="#333333"
+        android:layout_below="@id/txtCadastro"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/edtNome"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/txtNome"
+        android:layout_marginTop="8dp"
+        android:background="@android:drawable/edit_text"
+        android:paddingLeft="16dp"
+        android:textSize="16sp"
+        android:hint="Digite seu nome completo"
+        android:textColor="#333333"/>
+
+    <!-- Email -->
+    <TextView
+        android:id="@+id/txtEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:textSize="16sp"
+        android:textColor="#333333"
+        android:layout_below="@id/edtNome"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/edtEmail"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/txtEmail"
+        android:layout_marginTop="8dp"
+        android:background="@android:drawable/edit_text"
+        android:paddingLeft="16dp"
+        android:textSize="16sp"
+        android:hint="Digite seu email"
+        android:textColor="#333333"/>
+
+    <!-- Telefone -->
+    <TextView
+        android:id="@+id/txtTelefone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Telefone"
+        android:textSize="16sp"
+        android:textColor="#333333"
+        android:layout_below="@id/edtEmail"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/edtTelefone"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/txtTelefone"
+        android:layout_marginTop="8dp"
+        android:background="@android:drawable/edit_text"
+        android:paddingLeft="16dp"
+        android:textSize="16sp"
+        android:hint="Digite seu telefone"
+        android:textColor="#333333"/>
+
+    <!-- CEP -->
+    <TextView
+        android:id="@+id/txtCep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CEP"
+        android:textSize="16sp"
+        android:textColor="#333333"
+        android:layout_below="@id/edtTelefone"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/edtCep"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/txtCep"
+        android:layout_marginTop="8dp"
+        android:background="@android:drawable/edit_text"
+        android:paddingLeft="16dp"
+        android:textSize="16sp"
+        android:hint="Digite seu CEP"
+        android:textColor="#333333"/>
+
+    <!-- Botão de Cadastro -->
+    <Button
+        android:id="@+id/btnCadastrar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/edtCep"
+        android:layout_marginTop="39dp"
+        android:background="#0009ff"
+        android:text="Cadastrar"
+        android:textColor="#ffffff"
+        android:textSize="16sp" />
+
+
+</RelativeLayout>
