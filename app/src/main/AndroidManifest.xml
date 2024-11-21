@@ -48,6 +48,9 @@
         <activity
             android:name=".CheckoutActivity"
             android:exported="false" />
+        <activity
+            android:name=".EditarPerfilActivity"
+            android:exported="false" />
 
     </application>
 </manifest>

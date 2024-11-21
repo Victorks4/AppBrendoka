@@ -136,7 +136,8 @@
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-        <!-- Adicionar dentro do layout do PerfilFragment, após o CardView de informações -->
+
+        <!-- Botão de Gerenciar Endereços -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGerenciarEnderecos"
             android:layout_width="match_parent"
@@ -153,6 +154,17 @@
             android:layout_height="wrap_content"
             android:text="Editar Perfil"
             android:layout_marginTop="16dp"
+            app:cornerRadius="8dp"
+            app:icon="@drawable/ic_person"/>
+
+        <!-- Botão de Configurações -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConfiguracoes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Configurações"
+            android:layout_marginTop="8dp"
+            app:icon="@drawable/ic_settings"
             app:cornerRadius="8dp"/>
 
     </LinearLayout>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorSurface"
+        android:elevation="4dp"
+        app:title="Editar Perfil"
+        app:navigationIcon="@drawable/ic_back"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nome Completo"
+                android:layout_marginBottom="16dp"
+                style="@style/Widget.App.TextInputLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtNome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:layout_marginBottom="16dp"
+                style="@style/Widget.App.TextInputLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Telefone"
+                android:layout_marginBottom="16dp"
+                style="@style/Widget.App.TextInputLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtTelefone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="CEP"
+                android:layout_marginBottom="16dp"
+                style="@style/Widget.App.TextInputLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtCep"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLength="8"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSalvar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Salvar"
+        app:cornerRadius="8dp"/>
+
+</LinearLayout>
