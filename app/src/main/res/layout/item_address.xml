@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    app:cardElevation="2dp"
+    app:cardCornerRadius="8dp"
+    android:checkable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:id="@+id/address_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Casa"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Principal"
+                android:textSize="12sp"
+                app:chipMinHeight="24dp"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/address_street"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rua Exemplo, 123"/>
+
+        <TextView
+            android:id="@+id/address_neighborhood"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bairro"/>
+
+        <TextView
+            android:id="@+id/address_city_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cidade - Estado"/>
+
+        <TextView
+            android:id="@+id/address_complement"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Complemento"
+            android:textColor="?android:textColorSecondary"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Editar"
+                style="@style/Widget.Material3.Button.TextButton"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Excluir"
+                style="@style/Widget.Material3.Button.TextButton"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

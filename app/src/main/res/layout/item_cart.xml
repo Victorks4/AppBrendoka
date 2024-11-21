@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="4dp"
+    app:cardElevation="2dp"
+    app:cardCornerRadius="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/product_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nome do Produto"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/bakery_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nome da Padaria"
+                    android:textColor="?android:textColorSecondary"/>
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btn_remove"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_delete"
+                android:contentDescription="Remover item"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_quantity"
+                android:paddingHorizontal="8dp">
+
+                <ImageButton
+                    android:id="@+id/btn_decrease"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_remove"
+                    android:contentDescription="Diminuir quantidade"/>
+
+                <TextView
+                    android:id="@+id/quantity"
+                    android:layout_width="36dp"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textAlignment="center"
+                    android:textStyle="bold"/>
+
+                <ImageButton
+                    android:id="@+id/btn_increase"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_add"
+                    android:contentDescription="Aumentar quantidade"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="R$ 0,00"
+                android:textAlignment="textEnd"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
