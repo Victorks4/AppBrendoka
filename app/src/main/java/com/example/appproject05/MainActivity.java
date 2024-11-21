@@ -2,91 +2,55 @@ package com.example.appproject05;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-
-import androidx.activity.EdgeToEdge;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-
-    private static final String TAG = "MainActivity";
-    private ImageView img;
+    private ImageView imgLogo;
+    private TextView txtAppName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        try {
-            configureEdgeToEdge();
-            setContentView(R.layout.activity_main);
+        // Inicializar views
+        imgLogo = findViewById(R.id.imgLogo);
+        txtAppName = findViewById(R.id.txtAppName);
 
-            setupWindowInsets();
-            initializeViews();
-            startIntroAnimation();
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao iniciar a atividade: " + e.getMessage(), e);
-            fallbackToLoginScreen();
-        }
-    }
+        // Carregar animações
+        Animation fadeScale = AnimationUtils.loadAnimation(this, R.anim.fade_scale);
+        Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+        Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
 
-    private void configureEdgeToEdge() {
-        EdgeToEdge.enable(this);
-    }
+        // Aplicar animações
+        imgLogo.startAnimation(fadeScale);
+        txtAppName.startAnimation(slideUp);
 
-    private void setupWindowInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (view, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-    }
-
-    private void initializeViews() {
-        img = findViewById(R.id.Icon);
-    }
-
-    private void startIntroAnimation() {
-        // Carregar a animação aprimorada
-        Animation impactfulIntro = AnimationUtils.loadAnimation(this, R.anim.impactful_intro);
-
-        impactfulIntro.setAnimationListener(new Animation.AnimationListener() {
+        // Configurar listener para a última animação
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-                Log.d(TAG, "Animação iniciada");
-            }
+            public void onAnimationStart(Animation animation) {}
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                navigateToLoginScreen();
+                // Navegar para TelaLogin
+                startActivity(new Intent(MainActivity.this, TelaLogin.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
-                // Não usamos repetição neste caso
-            }
+            public void onAnimationRepeat(Animation animation) {}
         });
 
-        img.startAnimation(impactfulIntro);
-    }
-
-    private void navigateToLoginScreen() {
-        Intent intent = new Intent(MainActivity.this, TelaLogin.class);
-        startActivity(intent);
-
-        // Adiciona uma transição suave entre as telas
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-
-        finish();
-    }
-
-    private void fallbackToLoginScreen() {
-        Log.w(TAG, "Redirecionando para a tela de login devido a um erro crítico");
-        navigateToLoginScreen();
+        // Iniciar a animação de saída após o delay
+        imgLogo.postDelayed(() -> {
+            imgLogo.startAnimation(fadeOut);
+            txtAppName.startAnimation(fadeOut);
+        }, 1400);
     }
 }

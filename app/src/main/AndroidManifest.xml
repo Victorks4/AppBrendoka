@@ -13,6 +13,7 @@
         android:theme="@style/Theme.AppProject05"
         tools:targetApi="31">
 
+        <!-- Splash Screen -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -23,24 +24,21 @@
             </intent-filter>
         </activity>
 
+        <!-- Autenticação -->
         <activity
             android:name=".TelaLogin"
-            android:exported="false"
-            android:theme="@style/Theme.AppProject05" />
-
-        <activity
-            android:name=".TelaPrincipal"
-            android:exported="false"
-            android:theme="@style/Theme.AppProject05" />
-
+            android:exported="false" />
         <activity
             android:name=".TelaRecuperarSenha"
-            android:exported="false"
-            android:theme="@style/Theme.AppProject05" />
-
+            android:exported="false" />
         <activity
             android:name=".TelaCadastro"
-            android:exported="false"
-            android:theme="@style/Theme.AppProject05" />
+            android:exported="false" />
+
+        <!-- Principal -->
+        <activity
+            android:name=".TelaPrincipal"
+            android:exported="false" />
+
     </application>
 </manifest>

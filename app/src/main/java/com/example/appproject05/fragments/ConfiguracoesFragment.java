@@ -1,10 +1,12 @@
-package com.example.appproject05;
+package com.example.appproject05.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
+
+import com.example.appproject05.R;
 
 public class ConfiguracoesFragment extends Fragment {
     @Override
