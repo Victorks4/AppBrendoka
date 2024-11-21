@@ -1,74 +1,66 @@
 package com.example.appproject05;
 
 import android.os.Bundle;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+
+import com.example.appproject05.fragments.CartFragment;
+import com.example.appproject05.fragments.HomeFragment;
+import com.example.appproject05.fragments.BuscaFragment;
+import com.example.appproject05.fragments.PedidosFragment;
+import com.example.appproject05.fragments.PerfilFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 public class TelaPrincipal extends AppCompatActivity {
     private BottomNavigationView bottomNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tela_principal);
+        try {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_tela_principal);
 
-        bottomNav = findViewById(R.id.bottom_navigation);
+            bottomNav = findViewById(R.id.bottom_navigation);
+            bottomNav.setOnItemSelectedListener(navListener);
 
-        // Configurar o fragmento inicial
-        if (savedInstanceState == null) {
-            loadFragment(new HomeFragment());
-            setTitle("Início");
-        }
-
-        bottomNav.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-
-            if (itemId == R.id.nav_home) {
-                loadFragment(new HomeFragment());
-                setTitle("Início");
-                return true;
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new HomeFragment())
+                        .commit();
             }
-            else if (itemId == R.id.nav_perfil) {
-                loadFragment(new PerfilFragment());
-                setTitle("Perfil");
-                return true;
-            }
-            else if (itemId == R.id.nav_configuracoes) {
-                loadFragment(new ConfiguracoesFragment());
-                setTitle("Configurações");
-                return true;
-            }
-            return false;
-        });
-    }
-
-    private void loadFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.setCustomAnimations(
-                android.R.anim.fade_in,
-                android.R.anim.fade_out
-        );
-        transaction.replace(R.id.fragment_container, fragment);
-        transaction.commit();
-    }
-
-    private void setTitle(String title) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(title);
+        } catch (Exception e) {
+            Log.e("TelaPrincipal", "Erro no onCreate: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        // Se não estiver no fragmento home, volta para ele
-        if (bottomNav.getSelectedItemId() != R.id.nav_home) {
-            bottomNav.setSelectedItemId(R.id.nav_home);
-        } else {
-            super.onBackPressed();
+    private NavigationBarView.OnItemSelectedListener navListener = item -> {
+        Fragment selectedFragment = null;
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.nav_home) {
+            selectedFragment = new HomeFragment();
+        } else if (itemId == R.id.nav_search) {
+            selectedFragment = new BuscaFragment();
+        } else if (itemId == R.id.nav_orders) {
+            selectedFragment = new PedidosFragment();
+        } else if (itemId == R.id.nav_profile) {
+            selectedFragment = new PerfilFragment();
         }
-    }
+        else if (itemId == R.id.nav_cart) {
+            selectedFragment = new CartFragment();
+        }
+
+        if (selectedFragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, selectedFragment)
+                    .commit();
+        }
+
+        return true;
+    };
 }

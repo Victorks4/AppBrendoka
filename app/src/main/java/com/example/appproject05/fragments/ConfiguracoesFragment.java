@@ -1,4 +1,4 @@
-package com.example.appproject05;
+package com.example.appproject05.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,10 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
-public class PerfilFragment extends Fragment {
+import com.example.appproject05.R;
+
+public class ConfiguracoesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_perfil, container, false);
+        return inflater.inflate(R.layout.fragment_configuracoes, container, false);
     }
 }

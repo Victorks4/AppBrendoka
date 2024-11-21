@@ -3,15 +3,21 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home"
-        android:title="Home"/>
-
+        android:title="Home" />
     <item
-        android:id="@+id/nav_perfil"
+        android:id="@+id/nav_search"
+        android:icon="@drawable/ic_search"
+        android:title="Busca" />
+    <item
+        android:id="@+id/nav_orders"
+        android:icon="@drawable/ic_orders"
+        android:title="Pedidos" />
+    <item
+        android:id="@+id/nav_profile"
         android:icon="@drawable/ic_person"
-        android:title="Perfil"/>
-
+        android:title="Perfil" />
     <item
-        android:id="@+id/nav_configuracoes"
-        android:icon="@drawable/ic_settings"
-        android:title="Configurações"/>
+        android:id="@+id/nav_cart"
+        android:icon="@drawable/ic_cart"
+        android:title="Carrinho" />
 </menu>
