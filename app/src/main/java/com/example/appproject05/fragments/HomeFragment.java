@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
@@ -18,11 +20,13 @@ import java.util.List;
 public class HomeFragment extends Fragment implements
         BannerAdapter.OnBannerClickListener,
         CategoryAdapter.OnCategoryClickListener,
-        BakeryAdapter.OnBakeryClickListener {
+        ProductAdapter.OnProductClickListener {
 
     private ViewPager2 bannerViewPager;
     private RecyclerView categoriesRecyclerView;
-    private RecyclerView nearbyBakeriesRecyclerView;
+    private RecyclerView productsRecyclerView;
+    private TextView bakeryNameText;
+    private TextView bakeryInfoText;
     private List<BannerItem> banners = new ArrayList<>();
 
     @Override
@@ -33,6 +37,7 @@ public class HomeFragment extends Fragment implements
         initializeViews(view);
         setupRecyclerViews();
         loadMockData();
+        setupBakeryInfo();
 
         return view;
     }
@@ -40,27 +45,36 @@ public class HomeFragment extends Fragment implements
     private void initializeViews(View view) {
         bannerViewPager = view.findViewById(R.id.bannerViewPager);
         categoriesRecyclerView = view.findViewById(R.id.categoriesRecyclerView);
-        nearbyBakeriesRecyclerView = view.findViewById(R.id.nearbyBakeriesRecyclerView);
+        productsRecyclerView = view.findViewById(R.id.productsRecyclerView);
+        bakeryNameText = view.findViewById(R.id.bakeryNameText);
+        bakeryInfoText = view.findViewById(R.id.bakeryInfoText);
     }
 
     private void setupRecyclerViews() {
         bannerViewPager.setOffscreenPageLimit(1);
+
         categoriesRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        nearbyBakeriesRecyclerView.setLayoutManager(
-                new LinearLayoutManager(getContext()));
+
+        // Configurando grid de 2 colunas para produtos
+        productsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+    }
+
+    private void setupBakeryInfo() {
+        bakeryNameText.setText("Padaria do João");
+        bakeryInfoText.setText("Aberto • 06:00 - 22:00");
     }
 
     private void loadMockData() {
         loadMockBanners();
         loadMockCategories();
-        loadMockBakeries();
+        loadMockProducts();
     }
 
     private void loadMockBanners() {
         banners.clear();
-        banners.add(new BannerItem("1", R.drawable.banner1, "Promoção 1", "Descrição 1"));
-        banners.add(new BannerItem("2", R.drawable.banner2, "Promoção 2", "Descrição 2"));
+        banners.add(new BannerItem("1", R.drawable.banner1, "Pães Fresquinhos", "Todos os dias a partir das 6h"));
+        banners.add(new BannerItem("2", R.drawable.banner2, "Promoção de Doces", "50% off em todos os doces"));
 
         List<Integer> bannerImages = new ArrayList<>();
         for (BannerItem banner : banners) {
@@ -84,12 +98,17 @@ public class HomeFragment extends Fragment implements
         categoriesRecyclerView.setAdapter(categoryAdapter);
     }
 
-    private void loadMockBakeries() {
-        List<Bakery> bakeries = new ArrayList<>();
-        bakeries.add(new Bakery("1", "Padaria do João", "", 4.5f, "30-45 min", "R$ 5,00", true));
-        bakeries.add(new Bakery("2", "Padaria Maria", "", 4.8f, "25-35 min", "R$ 6,00", true));
-        BakeryAdapter bakeryAdapter = new BakeryAdapter(bakeries, this);
-        nearbyBakeriesRecyclerView.setAdapter(bakeryAdapter);
+    private void loadMockProducts() {
+        List<Product> products = new ArrayList<>();
+        products.add(new Product("1", "Pão Francês", "Pão fresquinho e crocante", 0.50, R.drawable.ic_bread));
+        products.add(new Product("2", "Croissant", "Croissant folhado", 5.00, R.drawable.ic_bread));
+        products.add(new Product("3", "Bolo de Chocolate", "Bolo caseiro", 25.00, R.drawable.ic_cake));
+        products.add(new Product("4", "Café Expresso", "Café premium", 3.50, R.drawable.ic_coffee));
+        products.add(new Product("5", "Coxinha", "Coxinha de frango", 4.50, R.drawable.ic_snack));
+        products.add(new Product("6", "Pão de Queijo", "Quentinho", 2.50, R.drawable.ic_bread));
+
+        ProductAdapter productAdapter = new ProductAdapter(products, this);
+        productsRecyclerView.setAdapter(productAdapter);
     }
 
     @Override
@@ -100,11 +119,11 @@ public class HomeFragment extends Fragment implements
 
     @Override
     public void onCategoryClick(Category category) {
-        // Implementar navegação para lista de produtos da categoria
+        // Filtrar produtos pela categoria selecionada
     }
 
     @Override
-    public void onBakeryClick(Bakery bakery) {
-        // Implementar navegação para detalhes da padaria
+    public void onProductClick(Product product) {
+        // Implementar navegação para detalhes do produto
     }
 }
