@@ -23,7 +23,7 @@
                 android:id="@+id/bakeryNameText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Padaria do João"
+                android:text="Brendoka Bakery"
                 android:textSize="24sp"
                 android:textStyle="bold"/>
 
