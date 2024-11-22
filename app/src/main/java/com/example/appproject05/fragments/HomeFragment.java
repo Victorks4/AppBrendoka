@@ -11,9 +11,15 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.example.appproject05.R;
-import com.example.appproject05.adapters.*;
-import com.example.appproject05.models.*;
+import com.example.appproject05.adapters.BannerAdapter;
+import com.example.appproject05.adapters.CategoryAdapter;
+import com.example.appproject05.adapters.ProductAdapter;
+import com.example.appproject05.models.BannerItem;
+import com.example.appproject05.models.Category;
+import com.example.appproject05.models.Product;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +29,7 @@ public class HomeFragment extends Fragment implements
         ProductAdapter.OnProductClickListener {
 
     private ViewPager2 bannerViewPager;
+    private TabLayout bannerIndicator;  // Adicionada declaração aqui
     private RecyclerView categoriesRecyclerView;
     private RecyclerView productsRecyclerView;
     private TextView bakeryNameText;
@@ -37,6 +44,7 @@ public class HomeFragment extends Fragment implements
         initializeViews(view);
         setupRecyclerViews();
         loadMockData();
+        setupBannerIndicator();
         setupBakeryInfo();
 
         return view;
@@ -44,6 +52,7 @@ public class HomeFragment extends Fragment implements
 
     private void initializeViews(View view) {
         bannerViewPager = view.findViewById(R.id.bannerViewPager);
+        bannerIndicator = view.findViewById(R.id.bannerIndicator);
         categoriesRecyclerView = view.findViewById(R.id.categoriesRecyclerView);
         productsRecyclerView = view.findViewById(R.id.productsRecyclerView);
         bakeryNameText = view.findViewById(R.id.bakeryNameText);
@@ -56,13 +65,20 @@ public class HomeFragment extends Fragment implements
         categoriesRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        // Configurando grid de 2 colunas para produtos
         productsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
     }
 
     private void setupBakeryInfo() {
         bakeryNameText.setText("Padaria do João");
         bakeryInfoText.setText("Aberto • 06:00 - 22:00");
+    }
+
+    private void setupBannerIndicator() {
+        new TabLayoutMediator(bannerIndicator, bannerViewPager,
+                (tab, position) -> {
+                    // O indicador é atualizado automaticamente
+                }
+        ).attach();
     }
 
     private void loadMockData() {
@@ -73,8 +89,8 @@ public class HomeFragment extends Fragment implements
 
     private void loadMockBanners() {
         banners.clear();
-        banners.add(new BannerItem("1", R.drawable.banner1, "Pães Fresquinhos", "Todos os dias a partir das 6h"));
-        banners.add(new BannerItem("2", R.drawable.banner2, "Promoção de Doces", "50% off em todos os doces"));
+        banners.add(new BannerItem("1", R.drawable.banner1, "Promoção 1", "Descrição 1"));
+        banners.add(new BannerItem("2", R.drawable.banner2, "Promoção 2", "Descrição 2"));
 
         List<Integer> bannerImages = new ArrayList<>();
         for (BannerItem banner : banners) {
@@ -100,12 +116,10 @@ public class HomeFragment extends Fragment implements
 
     private void loadMockProducts() {
         List<Product> products = new ArrayList<>();
-        products.add(new Product("1", "Pão Francês", "Pão fresquinho e crocante", 0.50, R.drawable.ic_bread));
+        products.add(new Product("1", "Pão Francês", "Pão fresquinho tradicional", 0.50, R.drawable.ic_bread));
         products.add(new Product("2", "Croissant", "Croissant folhado", 5.00, R.drawable.ic_bread));
         products.add(new Product("3", "Bolo de Chocolate", "Bolo caseiro", 25.00, R.drawable.ic_cake));
         products.add(new Product("4", "Café Expresso", "Café premium", 3.50, R.drawable.ic_coffee));
-        products.add(new Product("5", "Coxinha", "Coxinha de frango", 4.50, R.drawable.ic_snack));
-        products.add(new Product("6", "Pão de Queijo", "Quentinho", 2.50, R.drawable.ic_bread));
 
         ProductAdapter productAdapter = new ProductAdapter(products, this);
         productsRecyclerView.setAdapter(productAdapter);
@@ -119,7 +133,7 @@ public class HomeFragment extends Fragment implements
 
     @Override
     public void onCategoryClick(Category category) {
-        // Filtrar produtos pela categoria selecionada
+        // Implementar filtro por categoria
     }
 
     @Override
