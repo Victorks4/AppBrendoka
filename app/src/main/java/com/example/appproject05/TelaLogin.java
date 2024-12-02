@@ -2,10 +2,13 @@ package com.example.appproject05;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class TelaLogin extends AppCompatActivity {
     private TextInputEditText edtEmail;
@@ -14,10 +17,16 @@ public class TelaLogin extends AppCompatActivity {
     private MaterialButton btnEsqueceuSenha;
     private MaterialButton btnCadastrar;
 
+    // Referência ao FirebaseAuth
+    private FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_login);
+
+        // Inicializar FirebaseAuth
+        auth = FirebaseAuth.getInstance();
 
         // Inicializar componentes
         edtEmail = findViewById(R.id.edtEmailLogin);
@@ -29,9 +38,11 @@ public class TelaLogin extends AppCompatActivity {
         // Configurar listeners
         btnEntrar.setOnClickListener(v -> {
             if (validarCampos()) {
-                Intent intent = new Intent(TelaLogin.this, TelaPrincipal.class);
-                startActivity(intent);
-                finish();
+                String email = edtEmail.getText().toString().trim();
+                String senha = edtSenha.getText().toString().trim();
+
+                // Realizar login com Firebase
+                loginUsuario(email, senha);
             }
         });
 
@@ -44,6 +55,21 @@ public class TelaLogin extends AppCompatActivity {
             Intent intent = new Intent(TelaLogin.this, TelaCadastro.class);
             startActivity(intent);
         });
+    }
+
+    private void loginUsuario(String email, String senha) {
+        auth.signInWithEmailAndPassword(email, senha)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Login bem-sucedido
+                        Intent intent = new Intent(TelaLogin.this, TelaPrincipal.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        // Falha no login
+                        Toast.makeText(TelaLogin.this, "Erro ao fazer login: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     private boolean validarCampos() {

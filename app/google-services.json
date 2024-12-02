@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1010858423874",
+    "project_id": "brendoka-2d484",
+    "storage_bucket": "brendoka-2d484.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1010858423874:android:1b2f4e9c0e9c17f725dfdb",
+        "android_client_info": {
+          "package_name": "com.example.appproject05"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR7jkN67MH9hIuzAlgOGqT1UVCxXr_L9E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
