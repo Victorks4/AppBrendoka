@@ -27,22 +27,34 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
+    // Habilita o Firebase em tempo de execução
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
+    // Dependências do Android
     implementation libs.appcompat
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+    // Dependências do Firebase
     implementation libs.play.services.analytics.impl
     implementation libs.firebase.firestore
     implementation libs.firebase.auth
     implementation libs.firebase.database
+    implementation 'com.google.firebase:firebase-firestore:24.9.1'
+
+    // Testes unitários e de UI
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
-    implementation 'com.google.firebase:firebase-firestore:24.9.1'
-
 }
+
+// Aplicação do plugin do Google Services para integrar com o Firebase
+apply plugin: 'com.google.gms.google-services' // Importante!

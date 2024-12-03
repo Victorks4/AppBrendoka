@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- Barra de Navegação -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -14,6 +15,7 @@
         app:title="Editar Perfil"
         app:navigationIcon="@drawable/ic_back"/>
 
+    <!-- ScrollView para permitir rolagem quando o conteúdo exceder o tamanho da tela -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -25,6 +27,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Campo Nome Completo -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -36,9 +39,11 @@
                     android:id="@+id/edtNome"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName"/>
+                    android:inputType="textPersonName"
+                    android:maxLength="50"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Campo Email -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,9 +55,11 @@
                     android:id="@+id/edtEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"/>
+                    android:inputType="textEmailAddress"
+                    android:maxLength="100"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Campo Telefone -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -64,9 +71,11 @@
                     android:id="@+id/edtTelefone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="phone"/>
+                    android:inputType="phone"
+                    android:maxLength="15"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Campo CEP -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -85,6 +94,7 @@
         </LinearLayout>
     </ScrollView>
 
+    <!-- Botão Salvar -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSalvar"
         android:layout_width="match_parent"
@@ -92,5 +102,4 @@
         android:layout_margin="16dp"
         android:text="Salvar"
         app:cornerRadius="8dp"/>
-
 </LinearLayout>
