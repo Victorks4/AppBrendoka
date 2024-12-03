@@ -1,18 +1,19 @@
 package com.example.appproject05;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class TelaRecuperarSenha extends AppCompatActivity {
     private TextInputLayout inputLayoutEmail;
     private TextInputEditText edtEmailRecuperacao;
     private MaterialButton btnEnviar;
     private MaterialButton btnVoltar;
+    private FirebaseAuth auth; // Referência ao FirebaseAuth
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,28 +26,19 @@ public class TelaRecuperarSenha extends AppCompatActivity {
         btnEnviar = findViewById(R.id.btnEnviarRecuperacao);
         btnVoltar = findViewById(R.id.btnVoltar);
 
+        // Inicializar FirebaseAuth
+        auth = FirebaseAuth.getInstance();
+
         // Configurar listener do botão enviar
-        btnEnviar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validarEmail()) {
-                    // Aqui você implementaria a lógica real de recuperação de senha
-                    // Por enquanto apenas mostraremos uma mensagem
-                    Toast.makeText(TelaRecuperarSenha.this,
-                            "Email de recuperação enviado para: " + edtEmailRecuperacao.getText().toString(),
-                            Toast.LENGTH_LONG).show();
-                    finish(); // Fecha a tela após enviar
-                }
+        btnEnviar.setOnClickListener(v -> {
+            if (validarEmail()) {
+                String email = edtEmailRecuperacao.getText().toString().trim();
+                enviarEmailRecuperacao(email);
             }
         });
 
         // Configurar listener do botão voltar
-        btnVoltar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish(); // Fecha a tela e retorna para a anterior
-            }
-        });
+        btnVoltar.setOnClickListener(v -> finish()); // Fecha a tela e retorna para a anterior
     }
 
     private boolean validarEmail() {
@@ -64,5 +56,21 @@ public class TelaRecuperarSenha extends AppCompatActivity {
 
         inputLayoutEmail.setError(null);
         return true;
+    }
+
+    private void enviarEmailRecuperacao(String email) {
+        auth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(TelaRecuperarSenha.this,
+                                "Email de recuperação enviado para: " + email,
+                                Toast.LENGTH_LONG).show();
+                        finish(); // Fecha a tela após sucesso
+                    } else {
+                        Toast.makeText(TelaRecuperarSenha.this,
+                                "Erro ao enviar email de recuperação. Tente novamente.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 }
