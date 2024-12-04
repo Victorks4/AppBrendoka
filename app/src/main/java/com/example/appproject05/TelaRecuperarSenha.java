@@ -57,7 +57,7 @@ public class TelaRecuperarSenha extends AppCompatActivity {
         inputLayoutEmail.setError(null);
         return true;
     }
-
+//     // envia o link para recuperar a senha
     private void enviarEmailRecuperacao(String email) {
         auth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(task -> {
