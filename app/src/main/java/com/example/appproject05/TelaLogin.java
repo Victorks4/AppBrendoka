@@ -41,8 +41,16 @@ public class TelaLogin extends AppCompatActivity {
                 String email = edtEmail.getText().toString().trim();
                 String senha = edtSenha.getText().toString().trim();
 
-                // Realizar login com Firebase
-                loginUsuario(email, senha);
+                // Verificar se é o administrador
+                if (email.equals("admin@teste.com") && senha.equals("admin123")) {
+                    // Redirecionar para a tela de administrador
+                    Intent intent = new Intent(TelaLogin.this, AdminPanelActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    // Realizar login com Firebase
+                    loginUsuario(email, senha);
+                }
             }
         });
 

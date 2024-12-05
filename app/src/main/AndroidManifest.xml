@@ -51,6 +51,9 @@
         <activity
             android:name=".EditarPerfilActivity"
             android:exported="false" />
+        <activity
+            android:name=".AdminPanelActivity"
+            android:exported="false"/>
 
     </application>
 </manifest>
