@@ -54,6 +54,9 @@
         <activity
             android:name=".AdminPanelActivity"
             android:exported="false"/>
+        <activity
+            android:name=".GerenciarProdutosActivity"
+            android:exported="false"/>
 
     </application>
 </manifest>

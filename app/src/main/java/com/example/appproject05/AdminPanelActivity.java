@@ -1,5 +1,6 @@
 package com.example.appproject05;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -23,10 +24,12 @@ public class AdminPanelActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_panel);
 
-        initViews();
-        setupToolbar();
-        setupClickListeners();
-        loadDashboardData();
+        cardGerenciarProdutos = findViewById(R.id.cardGerenciarProdutos);
+
+        cardGerenciarProdutos.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminPanelActivity.this, GerenciarProdutosActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void initViews() {
