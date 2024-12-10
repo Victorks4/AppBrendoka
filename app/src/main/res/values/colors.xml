@@ -20,7 +20,11 @@
     <!-- Cores de status -->
     <color name="error">#FCA5A5</color>        <!-- Vermelho mais suave -->
     <color name="success">#86EFAC</color>      <!-- Verde mais suave -->
-
+    <color name="status_pending">#FFA000</color>
+    <color name="status_preparing">#1976D2</color>
+    <color name="status_delivering">#7B1FA2</color>
+    <color name="status_completed">#388E3C</color>
+    <color name="status_cancelled">#D32F2F</color>
     <!-- Cor para divisores -->
     <color name="divider">#2D3748</color>      <!-- Divisor mais escuro -->
 </resources>

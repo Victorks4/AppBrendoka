@@ -5,57 +5,63 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import com.example.appproject05.models.AdminDashboardStats;
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class AdminPanelActivity extends AppCompatActivity {
-    private Toolbar toolbar;
-    private MaterialCardView cardGerenciarProdutos;
-    private MaterialCardView cardGerenciarPedidos;
-    private MaterialCardView cardGerenciarUsuarios;
-    private MaterialCardView cardConfiguracoes;
-    private FloatingActionButton fabAddProduct;
+    private static final String TAG = "AdminPanelActivity";
+
     private TextView txtPedidosHoje;
     private TextView txtFaturamentoHoje;
     private TextView txtPedidosCrescimento;
     private TextView txtFaturamentoCrescimento;
+    private MaterialCardView cardGerenciarProdutos;
+    private MaterialCardView cardGerenciarPedidos;
+    private MaterialCardView cardConfiguracoes;
+
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            setContentView(R.layout.activity_admin_panel);
-            initViews();
-            setupToolbar();
-            setupClickListeners();
-            loadDashboardData();
-        } catch (Exception e) {
-            e.printStackTrace();
-            // Log o erro para debug
-            Log.e("AdminPanelActivity", "Error in onCreate: " + e.getMessage());
-        }
+        setContentView(R.layout.activity_admin_panel);
+
+        // Inicializar Firebase
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        initializeViews();
+        setupClickListeners();
+        loadDashboardData();
     }
 
-    private void initViews() {
-        toolbar = findViewById(R.id.toolbar);
-        cardGerenciarProdutos = findViewById(R.id.cardGerenciarProdutos);
-        cardGerenciarPedidos = findViewById(R.id.cardGerenciarPedidos);
-        cardConfiguracoes = findViewById(R.id.cardConfiguracoes);
-        fabAddProduct = findViewById(R.id.fabAddProduct);
+    private void initializeViews() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         txtPedidosHoje = findViewById(R.id.txtPedidosHoje);
         txtFaturamentoHoje = findViewById(R.id.txtFaturamentoHoje);
         txtPedidosCrescimento = findViewById(R.id.txtPedidosCrescimento);
         txtFaturamentoCrescimento = findViewById(R.id.txtFaturamentoCrescimento);
-    }
-
-    private void setupToolbar() {
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Painel Administrativo");
-        }
+        cardGerenciarProdutos = findViewById(R.id.cardGerenciarProdutos);
+        cardGerenciarPedidos = findViewById(R.id.cardGerenciarPedidos);
+        cardConfiguracoes = findViewById(R.id.cardConfiguracoes);
     }
 
     private void setupClickListeners() {
@@ -65,31 +71,43 @@ public class AdminPanelActivity extends AppCompatActivity {
         });
 
         cardGerenciarPedidos.setOnClickListener(v -> {
-            // TODO: Implementar navegação para tela de pedidos
-        });
-
-        cardGerenciarUsuarios.setOnClickListener(v -> {
-            // TODO: Implementar navegação para tela de usuários
+            Intent intent = new Intent(AdminPanelActivity.this, OrderManagementActivity.class);
+            startActivity(intent);
         });
 
         cardConfiguracoes.setOnClickListener(v -> {
-            // TODO: Implementar navegação para configurações
-        });
-
-        fabAddProduct.setOnClickListener(v -> {
-            Intent intent = new Intent(AdminPanelActivity.this, GerenciarProdutosActivity.class);
-            intent.putExtra("action", "add");
-            startActivity(intent);
+            // TODO: Implementar tela de configurações
+            Toast.makeText(this, "Configurações em desenvolvimento", Toast.LENGTH_SHORT).show();
         });
     }
 
     private void loadDashboardData() {
-        // TODO: Carregar dados do Firebase/backend
-        txtPedidosHoje.setText("15");
-        txtFaturamentoHoje.setText("R$ 1.234,00");
-        txtPedidosCrescimento.setText("+12.5%");
-        txtFaturamentoCrescimento.setText("+8.3%");
+        mDatabase.child("dashboard_stats").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                AdminDashboardStats stats = snapshot.getValue(AdminDashboardStats.class);
+                if (stats != null) {
+                    updateDashboardUI(stats);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, "loadDashboardData:onCancelled", error.toException());
+                Toast.makeText(AdminPanelActivity.this, "Erro ao carregar dados: " + error.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
+    private void updateDashboardUI(AdminDashboardStats stats) {
+        txtPedidosHoje.setText(String.valueOf(stats.getOrdersToday()));
+        txtFaturamentoHoje.setText(String.format("R$ %.2f", stats.getRevenueToday()));
+        txtPedidosCrescimento.setText(String.format("%.1f%%", stats.getOrdersGrowth()));
+        txtFaturamentoCrescimento.setText(String.format("%.1f%%", stats.getRevenueGrowth()));
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
