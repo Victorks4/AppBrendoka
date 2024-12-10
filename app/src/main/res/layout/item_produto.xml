@@ -35,23 +35,39 @@
             android:text="Descrição do Produto"
             android:textSize="14sp"
             android:textColor="@android:color/darker_gray"/>
+
+        <TextView
+            android:id="@+id/txtPrecoProduto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="R$ 0,00"
+            android:textSize="14sp"
+            android:textColor="@color/primary"
+            android:layout_marginTop="4dp"/>
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/btnEditarProduto"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_edit"
-        android:contentDescription="Editar Produto"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:tint="@color/primary"/>
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical">
 
-    <ImageButton
-        android:id="@+id/btnRemoverProduto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_delete"
-        android:contentDescription="Remover Produto"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:tint="@color/primary"/>
+        <ImageButton
+            android:id="@+id/btnEditarProduto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit"
+            android:contentDescription="Editar Produto"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"/>
+
+        <ImageButton
+            android:id="@+id/btnRemoverProduto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete"
+            android:contentDescription="Remover Produto"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"/>
+    </LinearLayout>
 </LinearLayout>
