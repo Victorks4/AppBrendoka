@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -14,8 +15,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorSurface"
-            android:elevation="4dp"
+            android:elevation="0dp"
             app:title="Painel Administrativo"
+            app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge"
             app:menu="@menu/admin_menu"/>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -31,74 +33,219 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Resumo -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- Cards de Métricas -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="8dp">
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <!-- Card Pedidos -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.Material3.CardView.Elevated"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="16dp">
 
-                    <!-- Pedidos Hoje -->
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:orientation="vertical"
-                        android:gravity="center">
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_orders"
+                            app:tint="?attr/colorPrimary"
+                            android:layout_marginBottom="8dp"/>
 
                         <TextView
                             android:id="@+id/txtPedidosHoje"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="15"
-                            android:textSize="24sp"
-                            android:textStyle="bold"/>
+                            android:textSize="28sp"
+                            android:textStyle="bold"
+                            android:textColor="?attr/colorOnSurface"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Pedidos Hoje"/>
-                    </LinearLayout>
+                            android:text="Pedidos Hoje"
+                            android:textColor="?attr/colorOnSurfaceVariant"/>
 
-                    <!-- Faturamento -->
+                        <TextView
+                            android:id="@+id/txtPedidosCrescimento"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="+12.5%"
+                            android:textColor="@color/success"
+                            android:drawableStart="@drawable/ic_trending_up"
+                            android:drawablePadding="4dp"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Card Faturamento -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.Material3.CardView.Elevated"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="16dp">
+
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:orientation="vertical"
-                        android:gravity="center">
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_money"
+                            app:tint="?attr/colorPrimary"
+                            android:layout_marginBottom="8dp"/>
 
                         <TextView
                             android:id="@+id/txtFaturamentoHoje"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="R$ 1.234,00"
-                            android:textSize="24sp"
-                            android:textStyle="bold"/>
+                            android:textSize="28sp"
+                            android:textStyle="bold"
+                            android:textColor="?attr/colorOnSurface"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Faturamento"/>
+                            android:text="Faturamento"
+                            android:textColor="?attr/colorOnSurfaceVariant"/>
+
+                        <TextView
+                            android:id="@+id/txtFaturamentoCrescimento"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="+8.3%"
+                            android:textColor="@color/success"
+                            android:drawableStart="@drawable/ic_trending_up"
+                            android:drawablePadding="4dp"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Seção de Ações Rápidas -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ações Rápidas"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                android:layout_marginBottom="16dp"/>
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Filled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <!-- Adicionar Produto -->
+                    <LinearLayout
+                        android:id="@+id/btnAddProduto"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:background="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_add"
+                            app:tint="?attr/colorPrimary"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Novo\nProduto"
+                            android:textAlignment="center"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+
+                    <!-- Ver Pedidos -->
+                    <LinearLayout
+                        android:id="@+id/btnVerPedidos"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:background="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_orders"
+                            app:tint="?attr/colorPrimary"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ver\nPedidos"
+                            android:textAlignment="center"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+
+                    <!-- Relatórios -->
+                    <LinearLayout
+                        android:id="@+id/btnRelatorios"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:background="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_chart"
+                            app:tint="?attr/colorPrimary"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ver\nRelatórios"
+                            android:textAlignment="center"
+                            android:layout_marginTop="4dp"/>
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Gerenciamento -->
+            <!-- Seção de Gerenciamento -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Gerenciamento"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                android:layout_marginBottom="16dp"/>
 
             <!-- Cards de Gerenciamento -->
             <LinearLayout
@@ -109,11 +256,11 @@
                 <!-- Gerenciar Produtos -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardGerenciarProdutos"
+                    style="@style/Widget.Material3.CardView.Elevated"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="8dp"
+                    app:cardCornerRadius="12dp"
                     android:clickable="true"
                     android:focusable="true">
 
@@ -130,13 +277,26 @@
                             android:src="@drawable/ic_product"
                             app:tint="?attr/colorPrimary"/>
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Gerenciar Produtos"
-                            android:layout_marginStart="16dp"
-                            android:textStyle="bold"/>
+                            android:orientation="vertical"
+                            android:layout_marginStart="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Gerenciar Produtos"
+                                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Adicione, edite e gerencie seus produtos"
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                                android:textColor="?attr/colorOnSurfaceVariant"/>
+                        </LinearLayout>
 
                         <ImageView
                             android:layout_width="24dp"
@@ -148,11 +308,11 @@
                 <!-- Gerenciar Pedidos -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardGerenciarPedidos"
+                    style="@style/Widget.Material3.CardView.Elevated"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="8dp"
+                    app:cardCornerRadius="12dp"
                     android:clickable="true"
                     android:focusable="true">
 
@@ -169,13 +329,26 @@
                             android:src="@drawable/ic_orders"
                             app:tint="?attr/colorPrimary"/>
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Gerenciar Pedidos"
-                            android:layout_marginStart="16dp"
-                            android:textStyle="bold"/>
+                            android:orientation="vertical"
+                            android:layout_marginStart="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Gerenciar Pedidos"
+                                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Acompanhe e gerencie os pedidos recebidos"
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                                android:textColor="?attr/colorOnSurfaceVariant"/>
+                        </LinearLayout>
 
                         <ImageView
                             android:layout_width="24dp"
@@ -184,24 +357,13 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Gerenciar Usuários -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardGerenciarUsuarios"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="8dp"
-                    android:clickable="true"
-                    android:focusable="true"/>
-
-                <!-- Configurações da Loja -->
+                <!-- Configurações -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardConfiguracoes"
+                    style="@style/Widget.Material3.CardView.Elevated"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="8dp"
+                    app:cardCornerRadius="12dp"
                     android:clickable="true"
                     android:focusable="true">
 
@@ -218,13 +380,26 @@
                             android:src="@drawable/ic_settings"
                             app:tint="?attr/colorPrimary"/>
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Configurações da Loja"
-                            android:layout_marginStart="16dp"
-                            android:textStyle="bold"/>
+                            android:orientation="vertical"
+                            android:layout_marginStart="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Configurações da Loja"
+                                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Personalize as configurações do seu negócio"
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                                android:textColor="?attr/colorOnSurfaceVariant"/>
+                        </LinearLayout>
 
                         <ImageView
                             android:layout_width="24dp"
@@ -235,14 +410,4 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddProduct"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add"
-        app:tint="?attr/colorOnPrimary"/>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
