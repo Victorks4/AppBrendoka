@@ -65,7 +65,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
         void bind(AdminOrder order) {
             orderIdText.setText("Pedido #" + order.getOrderId());
-            dateText.setText(dateFormat.format(new Date(order.getOrderDate())));
+            dateText.setText(dateFormat.format(new Date(String.valueOf(order.getOrderDate()))));
             statusText.setText("Status: " + order.getStatus());
             totalText.setText(String.format("Total: R$ %.2f", order.getTotal()));
 
