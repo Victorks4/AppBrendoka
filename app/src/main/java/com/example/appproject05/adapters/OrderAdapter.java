@@ -4,43 +4,41 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.example.appproject05.R;
+import com.example.appproject05.models.Order;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.appproject05.R;
-import com.example.appproject05.models.AdminOrder;
-import com.example.appproject05.models.CartItem;
-import com.google.android.material.button.MaterialButton;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
-    private List<AdminOrder> orders;
-    private OnOrderStatusChangeListener statusChangeListener;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+    private List<Order> orders;
+    private OnOrderActionListener listener;
 
-    public interface OnOrderStatusChangeListener {
-        void onStatusChange(String orderId, String newStatus);
+    public interface OnOrderActionListener {
+        void onAdvanceStatus(Order order);
+        void onCancelOrder(Order order);
     }
 
-    public OrderAdapter(List<AdminOrder> orders, OnOrderStatusChangeListener listener) {
+    public OrderAdapter(List<Order> orders, OnOrderActionListener listener) {
         this.orders = orders;
-        this.statusChangeListener = listener;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
     public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_order_admin, parent, false);
-        return new OrderViewHolder(view);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order, parent, false);
+        return new OrderViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
-        AdminOrder order = orders.get(position);
-        holder.bind(order);
+        holder.bind(orders.get(position));
     }
 
     @Override
@@ -48,65 +46,64 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         return orders.size();
     }
 
+    public void updateOrders(List<Order> newOrders) {
+        this.orders = newOrders;
+        notifyDataSetChanged();
+    }
+
     class OrderViewHolder extends RecyclerView.ViewHolder {
-        TextView orderIdText, dateText, statusText, totalText, itemsText, addressText;
-        MaterialButton btnUpdateStatus;
+        TextView txtOrderId;
+        Chip chipStatus;
+        TextView txtOrderDate;
+        TextView txtOrderTotal;
+        TextView txtDeliveryAddress;
+        TextView txtPaymentMethod;
+        MaterialButton btnAdvanceStatus;
+        MaterialButton btnCancelOrder;
 
-        OrderViewHolder(View itemView) {
+        public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
-            orderIdText = itemView.findViewById(R.id.order_id);
-            dateText = itemView.findViewById(R.id.order_date);
-            statusText = itemView.findViewById(R.id.order_status);
-            totalText = itemView.findViewById(R.id.order_total);
-            itemsText = itemView.findViewById(R.id.order_items);
-            addressText = itemView.findViewById(R.id.order_address);
-            btnUpdateStatus = itemView.findViewById(R.id.btn_update_status);
+            txtOrderId = itemView.findViewById(R.id.txtOrderId);
+            chipStatus = itemView.findViewById(R.id.chipStatus);
+            txtOrderDate = itemView.findViewById(R.id.txtOrderDate);
+            txtOrderTotal = itemView.findViewById(R.id.txtOrderTotal);
+            txtDeliveryAddress = itemView.findViewById(R.id.txtDeliveryAddress);
+            txtPaymentMethod = itemView.findViewById(R.id.txtPaymentMethod);
+            btnAdvanceStatus = itemView.findViewById(R.id.btnAdvanceStatus);
+            btnCancelOrder = itemView.findViewById(R.id.btnCancelOrder);
         }
 
-        void bind(AdminOrder order) {
-            orderIdText.setText("Pedido #" + order.getOrderId());
-            dateText.setText(dateFormat.format(new Date(String.valueOf(order.getOrderDate()))));
-            statusText.setText("Status: " + order.getStatus());
-            totalText.setText(String.format("Total: R$ %.2f", order.getTotal()));
+        public void bind(Order order) {
+            txtOrderId.setText("Pedido #" + order.getOrderId());
+            chipStatus.setText(order.getStatus());
 
-            // Criando lista de items
-            StringBuilder items = new StringBuilder();
-            for (CartItem item : order.getItems()) {
-                items.append(item.getQuantity())
-                        .append("x ")
-                        .append(item.getProductName())
-                        .append("\n");
+            // Formatar data
+            String formattedDate;
+            try {
+                long timestamp = order.getOrderDate();
+                Date date = new Date(timestamp);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+                formattedDate = sdf.format(date);
+            } catch (Exception e) {
+                formattedDate = "Data não disponível";
             }
-            itemsText.setText(items.toString());
+            txtOrderDate.setText(formattedDate);
 
-            addressText.setText(order.getAddress());
+            txtOrderTotal.setText(String.format(Locale.getDefault(), "Total: R$ %.2f", order.getTotal()));
+            txtDeliveryAddress.setText("Endereço: " + order.getAddress());
+            txtPaymentMethod.setText("Pagamento: " + order.getPaymentMethod());
 
-            setupStatusButton(order);
-        }
+            btnAdvanceStatus.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onAdvanceStatus(order);
+                }
+            });
 
-        private void setupStatusButton(AdminOrder order) {
-            String nextStatus = getNextStatus(order.getStatus());
-            if (nextStatus != null) {
-                btnUpdateStatus.setText("Marcar como " + nextStatus);
-                btnUpdateStatus.setOnClickListener(v ->
-                        statusChangeListener.onStatusChange(order.getOrderId(), nextStatus));
-                btnUpdateStatus.setVisibility(View.VISIBLE);
-            } else {
-                btnUpdateStatus.setVisibility(View.GONE);
-            }
-        }
-
-        private String getNextStatus(String currentStatus) {
-            switch (currentStatus) {
-                case "PENDING":
-                    return "PREPARING";
-                case "PREPARING":
-                    return "DELIVERING";
-                case "DELIVERING":
-                    return "COMPLETED";
-                default:
-                    return null;
-            }
+            btnCancelOrder.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onCancelOrder(order);
+                }
+            });
         }
     }
 }

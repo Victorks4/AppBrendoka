@@ -1,165 +1,203 @@
 package com.example.appproject05.models;
 
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.database.PropertyName;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Date;
+import java.util.Map;
 
 /**
- * Classe que representa um pedido no painel administrativo.
- * Contém informações detalhadas sobre o pedido e métodos para sua gestão.
+ * Modelo de pedido otimizado para Firebase Realtime Database
  */
+@IgnoreExtraProperties
 public class AdminOrder {
+    @PropertyName("order_id")
     private String orderId;
+
+    @PropertyName("user_id")
     private String userId;
+
+    @PropertyName("items")
     private List<CartItem> items;
-    private double subtotal;
-    private double deliveryFee;
-    private double total;
+
+    @PropertyName("subtotal")
+    private Double subtotal;
+
+    @PropertyName("delivery_fee")
+    private Double deliveryFee;
+
+    @PropertyName("total")
+    private Double total;
+
+    @PropertyName("status")
     private String status;
+
+    @PropertyName("address")
     private String address;
+
+    @PropertyName("payment_method")
     private String paymentMethod;
-    private Date createdAt;
+
+    @PropertyName("created_at")
+    private Long createdAt;
+
+    @PropertyName("customer_name")
     private String customerName;
+
+    @PropertyName("customer_phone")
     private String customerPhone;
 
-    // Status possíveis do pedido
+    // Status constantes
+    @Exclude
     public static final String STATUS_PENDING = "PENDING";
+    @Exclude
     public static final String STATUS_PREPARING = "PREPARING";
+    @Exclude
     public static final String STATUS_READY = "READY";
+    @Exclude
     public static final String STATUS_DELIVERING = "DELIVERING";
+    @Exclude
     public static final String STATUS_DELIVERED = "DELIVERED";
+    @Exclude
     public static final String STATUS_CANCELLED = "CANCELLED";
 
-    /**
-     * Construtor padrão necessário para o Firebase
-     */
+    // Construtor vazio necessário para o Firebase
     public AdminOrder() {
         this.items = new ArrayList<>();
-        this.createdAt = new Date();
+        this.createdAt = System.currentTimeMillis();
         this.status = STATUS_PENDING;
+        this.subtotal = 0.0;
+        this.deliveryFee = 0.0;
+        this.total = 0.0;
     }
 
     /**
-     * Construtor completo para criar um novo pedido
+     * Construtor para novo pedido
      */
-    public AdminOrder(String orderId, String userId, List<CartItem> items, String address,
+    public AdminOrder(String userId, List<CartItem> items, String address,
                       String paymentMethod, String customerName, String customerPhone) {
-        this.orderId = orderId;
+        this();
         this.userId = userId;
         this.items = items != null ? items : new ArrayList<>();
         this.address = address;
         this.paymentMethod = paymentMethod;
         this.customerName = customerName;
         this.customerPhone = customerPhone;
-        this.createdAt = new Date();
-        this.status = STATUS_PENDING;
         calculateTotals();
     }
 
     /**
-     * Calcula os totais do pedido (subtotal, taxa de entrega e total)
+     * Calcula os totais do pedido
      */
+    @Exclude
     private void calculateTotals() {
-        this.subtotal = 0;
-        for (CartItem item : this.items) {
-            this.subtotal += item.getTotal();
+        this.subtotal = 0.0;
+        if (this.items != null) {
+            for (CartItem item : this.items) {
+                this.subtotal += item.getTotal();
+            }
         }
-        // Taxa de entrega fixa por enquanto
-        this.deliveryFee = 5.0;
+        this.deliveryFee = 5.0; // Taxa fixa por enquanto
         this.total = this.subtotal + this.deliveryFee;
     }
 
     /**
-     * Atualiza o status do pedido e valida a transição
-     * @param newStatus Novo status do pedido
-     * @return true se a atualização foi bem sucedida
+     * Converte o pedido para Map (útil para Firebase)
      */
-    public boolean updateStatus(String newStatus) {
-        // Validar transição de status
-        if (!isValidStatusTransition(newStatus)) {
-            return false;
-        }
-        this.status = newStatus;
-        return true;
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("order_id", orderId);
+        result.put("user_id", userId);
+        result.put("items", items);
+        result.put("subtotal", subtotal);
+        result.put("delivery_fee", deliveryFee);
+        result.put("total", total);
+        result.put("status", status);
+        result.put("address", address);
+        result.put("payment_method", paymentMethod);
+        result.put("created_at", createdAt);
+        result.put("customer_name", customerName);
+        result.put("customer_phone", customerPhone);
+        return result;
     }
 
-    /**
-     * Valida se a transição de status é permitida
-     */
-    private boolean isValidStatusTransition(String newStatus) {
-        switch (this.status) {
-            case STATUS_PENDING:
-                return newStatus.equals(STATUS_PREPARING) || newStatus.equals(STATUS_CANCELLED);
-            case STATUS_PREPARING:
-                return newStatus.equals(STATUS_READY) || newStatus.equals(STATUS_CANCELLED);
-            case STATUS_READY:
-                return newStatus.equals(STATUS_DELIVERING) || newStatus.equals(STATUS_CANCELLED);
-            case STATUS_DELIVERING:
-                return newStatus.equals(STATUS_DELIVERED) || newStatus.equals(STATUS_CANCELLED);
-            case STATUS_DELIVERED:
-            case STATUS_CANCELLED:
-                return false; // Status finais não podem ser alterados
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * Adiciona um item ao pedido
-     */
-    public void addItem(CartItem item) {
-        if (this.items == null) {
-            this.items = new ArrayList<>();
-        }
-        this.items.add(item);
-        calculateTotals();
-    }
-
-    /**
-     * Remove um item do pedido
-     */
-    public void removeItem(CartItem item) {
-        if (this.items != null) {
-            this.items.remove(item);
-            calculateTotals();
-        }
-    }
-
-    // Getters e Setters
+    // Getters e Setters com anotações do Firebase
+    @PropertyName("order_id")
     public String getOrderId() { return orderId; }
+
+    @PropertyName("order_id")
     public void setOrderId(String orderId) { this.orderId = orderId; }
 
+    @PropertyName("user_id")
     public String getUserId() { return userId; }
+
+    @PropertyName("user_id")
     public void setUserId(String userId) { this.userId = userId; }
 
+    @PropertyName("items")
     public List<CartItem> getItems() { return items; }
+
+    @PropertyName("items")
     public void setItems(List<CartItem> items) {
         this.items = items != null ? items : new ArrayList<>();
         calculateTotals();
     }
 
-    public Date getOrderDate() {
-        return createdAt;
-    }
-    public double getSubtotal() { return subtotal; }
-    public double getDeliveryFee() { return deliveryFee; }
-    public double getTotal() { return total; }
+    @PropertyName("subtotal")
+    public Double getSubtotal() { return subtotal; }
 
+    @PropertyName("subtotal")
+    public void setSubtotal(Double subtotal) { this.subtotal = subtotal; }
+
+    @PropertyName("delivery_fee")
+    public Double getDeliveryFee() { return deliveryFee; }
+
+    @PropertyName("delivery_fee")
+    public void setDeliveryFee(Double deliveryFee) { this.deliveryFee = deliveryFee; }
+
+    @PropertyName("total")
+    public Double getTotal() { return total; }
+
+    @PropertyName("total")
+    public void setTotal(Double total) { this.total = total; }
+
+    @PropertyName("status")
     public String getStatus() { return status; }
+
+    @PropertyName("status")
     public void setStatus(String status) { this.status = status; }
 
+    @PropertyName("address")
     public String getAddress() { return address; }
+
+    @PropertyName("address")
     public void setAddress(String address) { this.address = address; }
 
+    @PropertyName("payment_method")
     public String getPaymentMethod() { return paymentMethod; }
+
+    @PropertyName("payment_method")
     public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
 
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+    @PropertyName("created_at")
+    public Long getCreatedAt() { return createdAt; }
 
+    @PropertyName("created_at")
+    public void setCreatedAt(Long createdAt) { this.createdAt = createdAt; }
+
+    @PropertyName("customer_name")
     public String getCustomerName() { return customerName; }
+
+    @PropertyName("customer_name")
     public void setCustomerName(String customerName) { this.customerName = customerName; }
 
+    @PropertyName("customer_phone")
     public String getCustomerPhone() { return customerPhone; }
+
+    @PropertyName("customer_phone")
     public void setCustomerPhone(String customerPhone) { this.customerPhone = customerPhone; }
 }

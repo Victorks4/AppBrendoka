@@ -12,6 +12,11 @@ public class Order {
     private String status;
     private long orderDate;
     private String userId;
+
+    public Order() {
+        // Construtor vazio necessário para o Firebase
+    }
+
     public Order(List<CartItem> items, String address, String paymentMethod) {
         this.items = items;
         this.address = address;
@@ -23,11 +28,11 @@ public class Order {
     }
 
     private void calculateTotals() {
-        this.subtotal = 0;
+        subtotal = 0;
         for (CartItem item : items) {
-            this.subtotal += item.getTotal();
+            subtotal += item.getTotal();
         }
-        this.deliveryFee = 5.0; // Taxa fixa por enquanto
+        deliveryFee = 5.0; // Taxa fixa
     }
 
     public double getTotal() {
@@ -38,18 +43,19 @@ public class Order {
     public String getOrderId() { return orderId; }
     public void setOrderId(String orderId) { this.orderId = orderId; }
     public List<CartItem> getItems() { return items; }
+    public void setItems(List<CartItem> items) { this.items = items; }
     public double getSubtotal() { return subtotal; }
+    public void setSubtotal(double subtotal) { this.subtotal = subtotal; }
     public double getDeliveryFee() { return deliveryFee; }
+    public void setDeliveryFee(double deliveryFee) { this.deliveryFee = deliveryFee; }
     public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
     public String getPaymentMethod() { return paymentMethod; }
+    public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     public long getOrderDate() { return orderDate; }
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+    public void setOrderDate(long orderDate) { this.orderDate = orderDate; }
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
 }

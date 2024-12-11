@@ -8,8 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.appproject05.adapters.OrderAdapter;
+import com.example.appproject05.adapters.AdminOrderAdapter;
 import com.example.appproject05.models.AdminOrder;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class OrderManagementActivity extends AppCompatActivity {
+public class OrderManagementActivity extends AppCompatActivity implements AdminOrderAdapter.OnOrderActionListener {
     private RecyclerView recyclerView;
-    private OrderAdapter adapter;
+    private AdminOrderAdapter adapter;
     private List<AdminOrder> allOrders;
     private List<AdminOrder> filteredOrders;
     private DatabaseReference ordersRef;
@@ -33,11 +34,11 @@ public class OrderManagementActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_management);
 
-        // Inicializar listas
+        // Initialize lists
         allOrders = new ArrayList<>();
         filteredOrders = new ArrayList<>();
 
-        // Inicializar Firebase
+        // Initialize Firebase
         ordersRef = FirebaseDatabase.getInstance().getReference().child("orders");
 
         setupToolbar();
@@ -73,18 +74,18 @@ public class OrderManagementActivity extends AppCompatActivity {
 
     private String getStatusForTab(int position) {
         switch (position) {
-            case 0: return "PENDING";
-            case 1: return "PREPARING";
-            case 2: return "DELIVERING";
-            case 3: return "COMPLETED";
-            default: return "PENDING";
+            case 0: return AdminOrder.STATUS_PENDING;
+            case 1: return AdminOrder.STATUS_PREPARING;
+            case 2: return AdminOrder.STATUS_DELIVERING;
+            case 3: return AdminOrder.STATUS_DELIVERED;
+            default: return AdminOrder.STATUS_PENDING;
         }
     }
 
     private void setupRecyclerView() {
         recyclerView = findViewById(R.id.recyclerViewOrders);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new OrderAdapter(filteredOrders, this::updateOrderStatus);
+        adapter = new AdminOrderAdapter(filteredOrders, this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -97,7 +98,6 @@ public class OrderManagementActivity extends AppCompatActivity {
                     try {
                         AdminOrder order = orderSnapshot.getValue(AdminOrder.class);
                         if (order != null) {
-                            // Garantir que o orderId está definido
                             order.setOrderId(orderSnapshot.getKey());
                             allOrders.add(order);
                         }
@@ -107,7 +107,6 @@ public class OrderManagementActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
-                // Filtrar para o status atual
                 filterOrdersByStatus(getStatusForTab(tabLayout.getSelectedTabPosition()));
             }
 
@@ -126,6 +125,42 @@ public class OrderManagementActivity extends AppCompatActivity {
                 .filter(order -> status.equals(order.getStatus()))
                 .collect(Collectors.toList()));
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onAdvanceStatus(AdminOrder order) {
+        String currentStatus = order.getStatus();
+        String nextStatus = getNextStatus(currentStatus);
+        if (nextStatus != null) {
+            updateOrderStatus(order.getOrderId(), nextStatus);
+        }
+    }
+
+    @Override
+    public void onCancelOrder(AdminOrder order) {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Cancelar Pedido")
+                .setMessage("Tem certeza que deseja cancelar este pedido?")
+                .setPositiveButton("Sim", (dialog, which) -> {
+                    updateOrderStatus(order.getOrderId(), AdminOrder.STATUS_CANCELLED);
+                })
+                .setNegativeButton("Não", null)
+                .show();
+    }
+
+    private String getNextStatus(String currentStatus) {
+        switch (currentStatus) {
+            case AdminOrder.STATUS_PENDING:
+                return AdminOrder.STATUS_PREPARING;
+            case AdminOrder.STATUS_PREPARING:
+                return AdminOrder.STATUS_READY;
+            case AdminOrder.STATUS_READY:
+                return AdminOrder.STATUS_DELIVERING;
+            case AdminOrder.STATUS_DELIVERING:
+                return AdminOrder.STATUS_DELIVERED;
+            default:
+                return null;
+        }
     }
 
     private void updateOrderStatus(String orderId, String newStatus) {

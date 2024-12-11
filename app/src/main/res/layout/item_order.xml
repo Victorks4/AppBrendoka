@@ -15,6 +15,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Cabeçalho do Pedido -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,48 +35,39 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"/>
-
         </LinearLayout>
 
+        <!-- Data do Pedido -->
         <TextView
             android:id="@+id/txtOrderDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            android:textColor="?android:textColorSecondary"/>
 
-        <!-- Informações do Cliente -->
-        <TextView
-            android:id="@+id/txtCustomerInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
-
-        <!-- Lista de Itens -->
-        <TextView
-            android:id="@+id/txtItems"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
-
+        <!-- Total do Pedido -->
         <TextView
             android:id="@+id/txtOrderTotal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            android:textStyle="bold"/>
 
+        <!-- Endereço de Entrega -->
         <TextView
             android:id="@+id/txtDeliveryAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"/>
 
+        <!-- Método de Pagamento -->
         <TextView
             android:id="@+id/txtPaymentMethod"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"/>
 
+        <!-- Ações do Pedido -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -88,6 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
+                android:text="Acompanhar"
                 style="@style/Widget.MaterialComponents.Button"/>
 
             <com.google.android.material.button.MaterialButton
@@ -96,7 +89,6 @@
                 android:layout_height="wrap_content"
                 android:text="Cancelar"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-
         </LinearLayout>
 
     </LinearLayout>
