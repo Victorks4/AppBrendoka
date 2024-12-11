@@ -6,13 +6,18 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.appproject05.models.Order;
+import com.example.appproject05.models.CartItem;
 import com.example.appproject05.utils.CartManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import java.util.UUID;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CheckoutActivity extends AppCompatActivity {
     private TextView txtSubtotal, txtDelivery, txtTotal;
@@ -20,7 +25,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private RadioGroup paymentOptions;
     private MaterialButton btnChangeAddress, btnPlaceOrder;
     private CartManager cartManager;
-    private DatabaseReference ordersRef;
+    private FirebaseFirestore firestore;
     private double subtotal = 0.0;
     private double deliveryFee = 5.0;
 
@@ -29,14 +34,14 @@ public class CheckoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
-        initViews();
+        initializeViews();
         setupFirebase();
         setupCartManager();
         setupListeners();
         loadOrderData();
     }
 
-    private void initViews() {
+    private void initializeViews() {
         txtSubtotal = findViewById(R.id.txt_checkout_subtotal);
         txtDelivery = findViewById(R.id.txt_checkout_delivery);
         txtTotal = findViewById(R.id.txt_checkout_total);
@@ -48,7 +53,7 @@ public class CheckoutActivity extends AppCompatActivity {
     }
 
     private void setupFirebase() {
-        ordersRef = FirebaseDatabase.getInstance().getReference("orders");
+        firestore = FirebaseFirestore.getInstance();
     }
 
     private void setupCartManager() {
@@ -57,7 +62,6 @@ public class CheckoutActivity extends AppCompatActivity {
 
     private void setupListeners() {
         btnChangeAddress.setOnClickListener(v -> {
-            // Implementar seleção de endereço
             Toast.makeText(this, "Selecionar endereço", Toast.LENGTH_SHORT).show();
         });
 
@@ -89,13 +93,11 @@ public class CheckoutActivity extends AppCompatActivity {
     }
 
     private void loadDefaultAddress() {
-        // TODO: Carregar endereço padrão do usuário
         addressTitle.setText("Casa");
         addressDetails.setText("Rua Exemplo, 123 - Bairro - Cidade");
     }
 
     private void showChangeInputDialog() {
-        // TODO: Implementar diálogo para troco
         Toast.makeText(this, "Informar troco", Toast.LENGTH_SHORT).show();
     }
 
@@ -109,34 +111,53 @@ public class CheckoutActivity extends AppCompatActivity {
 
     private void processOrder() {
         showLoading(true);
-
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String orderId = UUID.randomUUID().toString();
 
-        Order order = new Order(
-                cartManager.getCartItems(),
-                addressDetails.getText().toString(),
-                getSelectedPaymentMethod()
-        );
-        order.setOrderId(orderId);
-        order.setUserId(userId);
+        // Pegar itens do carrinho diretamente
+        List<CartItem> cartItems = cartManager.getCartItems();
 
-        ordersRef.child(orderId).setValue(order)
-                .addOnSuccessListener(aVoid -> {
-                    cartManager.clearCart()
-                            .addOnSuccessListener(aVoid2 -> {
-                                Toast.makeText(this, "Pedido realizado com sucesso!", Toast.LENGTH_LONG).show();
-                                finish();
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(this, "Erro ao limpar carrinho: " + e.getMessage(),
-                                        Toast.LENGTH_LONG).show();
-                            });
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Erro ao processar pedido: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
-                    showLoading(false);
+        // Buscar dados do usuário
+        FirebaseDatabase.getInstance().getReference("usuarios")
+                .child(userId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        String customerName = snapshot.child("nome").getValue(String.class);
+                        String customerPhone = snapshot.child("telefone").getValue(String.class);
+
+                        // Criar mapa de dados do pedido
+                        Map<String, Object> orderData = new HashMap<>();
+                        orderData.put("userId", userId);
+                        orderData.put("customerName", customerName);
+                        orderData.put("customerPhone", customerPhone);
+                        orderData.put("items", cartItems);
+                        orderData.put("address", addressDetails.getText().toString());
+                        orderData.put("paymentMethod", getSelectedPaymentMethod());
+                        orderData.put("status", "PENDING");
+                        orderData.put("orderDate", System.currentTimeMillis());
+
+                        double subtotal = calculateSubtotal(cartItems);
+                        orderData.put("subtotal", subtotal);
+                        orderData.put("deliveryFee", deliveryFee);
+                        orderData.put("total", subtotal + deliveryFee);
+
+                        // Salvar no Firestore
+                        firestore.collection("orders")
+                                .add(orderData)
+                                .addOnSuccessListener(documentReference -> {
+                                    cartManager.clearCart();
+                                    Toast.makeText(CheckoutActivity.this,
+                                            "Pedido realizado com sucesso!",
+                                            Toast.LENGTH_LONG).show();
+                                    finish();
+                                })
+                                .addOnFailureListener(e -> showError("Erro ao processar pedido: " + e.getMessage()));
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        showError("Erro ao buscar dados do usuário: " + error.getMessage());
+                    }
                 });
     }
 
@@ -151,8 +172,20 @@ public class CheckoutActivity extends AppCompatActivity {
         }
     }
 
+    private double calculateSubtotal(List<CartItem> items) {
+        double subtotal = 0;
+        for (CartItem item : items) {
+            subtotal += item.getPrice() * item.getQuantity();
+        }
+        return subtotal;
+    }
+
     private void showLoading(boolean show) {
         btnPlaceOrder.setEnabled(!show);
-        // TODO: Implementar um ProgressBar se necessário
+    }
+
+    private void showError(String message) {
+        showLoading(false);
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }
