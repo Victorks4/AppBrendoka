@@ -8,26 +8,25 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.appproject05.R;
 import com.example.appproject05.models.AdminOrder;
+import com.example.appproject05.models.CartItem;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.chip.Chip;
-
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
-    private final List<AdminOrder> orderList;
-    private final OnOrderStatusChangeListener statusChangeListener;
-    private final SimpleDateFormat dateFormat;
+    private List<AdminOrder> orders;
+    private OnOrderStatusChangeListener statusChangeListener;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
     public interface OnOrderStatusChangeListener {
-        void onOrderStatusChange(String orderId, String newStatus);
+        void onStatusChange(String orderId, String newStatus);
     }
 
-    public OrderAdapter(List<AdminOrder> orderList, OnOrderStatusChangeListener listener) {
-        this.orderList = orderList;
+    public OrderAdapter(List<AdminOrder> orders, OnOrderStatusChangeListener listener) {
+        this.orders = orders;
         this.statusChangeListener = listener;
-        this.dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
     }
 
     @NonNull
@@ -40,91 +39,61 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
-        AdminOrder order = orderList.get(position);
+        AdminOrder order = orders.get(position);
         holder.bind(order);
     }
 
     @Override
     public int getItemCount() {
-        return orderList.size();
+        return orders.size();
     }
 
     class OrderViewHolder extends RecyclerView.ViewHolder {
-        private final TextView txtOrderId;
-        private final TextView txtOrderDate;
-        private final TextView txtOrderTotal;
-        private final TextView txtDeliveryAddress;
-        private final TextView txtPaymentMethod;
-        private final Chip chipStatus;
-        private final MaterialButton btnAdvanceStatus;
-        private final MaterialButton btnCancelOrder;
+        TextView orderIdText, dateText, statusText, totalText, itemsText, addressText;
+        MaterialButton btnUpdateStatus;
 
         OrderViewHolder(View itemView) {
             super(itemView);
-            txtOrderId = itemView.findViewById(R.id.txtOrderId);
-            txtOrderDate = itemView.findViewById(R.id.txtOrderDate);
-            txtOrderTotal = itemView.findViewById(R.id.txtOrderTotal);
-            txtDeliveryAddress = itemView.findViewById(R.id.txtDeliveryAddress);
-            txtPaymentMethod = itemView.findViewById(R.id.txtPaymentMethod);
-            chipStatus = itemView.findViewById(R.id.chipStatus);
-            btnAdvanceStatus = itemView.findViewById(R.id.btnAdvanceStatus);
-            btnCancelOrder = itemView.findViewById(R.id.btnCancelOrder);
+            orderIdText = itemView.findViewById(R.id.order_id);
+            dateText = itemView.findViewById(R.id.order_date);
+            statusText = itemView.findViewById(R.id.order_status);
+            totalText = itemView.findViewById(R.id.order_total);
+            itemsText = itemView.findViewById(R.id.order_items);
+            addressText = itemView.findViewById(R.id.order_address);
+            btnUpdateStatus = itemView.findViewById(R.id.btn_update_status);
         }
 
         void bind(AdminOrder order) {
-            txtOrderId.setText("Pedido #" + order.getOrderId());
-            txtOrderDate.setText(dateFormat.format(order.getCreatedAt()));
-            txtOrderTotal.setText(String.format(Locale.getDefault(), "R$ %.2f", order.getTotal()));
-            txtDeliveryAddress.setText(order.getDeliveryAddress());
-            txtPaymentMethod.setText(order.getPaymentMethod());
+            orderIdText.setText("Pedido #" + order.getOrderId());
+            dateText.setText(dateFormat.format(new Date(order.getOrderDate())));
+            statusText.setText("Status: " + order.getStatus());
+            totalText.setText(String.format("Total: R$ %.2f", order.getTotal()));
 
-            updateStatusViews(order.getStatus());
+            // Criando lista de items
+            StringBuilder items = new StringBuilder();
+            for (CartItem item : order.getItems()) {
+                items.append(item.getQuantity())
+                        .append("x ")
+                        .append(item.getProductName())
+                        .append("\n");
+            }
+            itemsText.setText(items.toString());
 
-            btnAdvanceStatus.setOnClickListener(v -> {
-                String nextStatus = getNextStatus(order.getStatus());
-                if (nextStatus != null) {
-                    statusChangeListener.onOrderStatusChange(order.getOrderId(), nextStatus);
-                }
-            });
+            addressText.setText(order.getAddress());
 
-            btnCancelOrder.setOnClickListener(v ->
-                    statusChangeListener.onOrderStatusChange(order.getOrderId(), "CANCELLED"));
+            setupStatusButton(order);
         }
 
-        private void updateStatusViews(String status) {
-            chipStatus.setText(getStatusDisplayText(status));
-
-            // Configurar cor do chip baseado no status
-            int colorRes;
-            switch (status) {
-                case "PENDING":
-                    colorRes = R.color.status_pending;
-                    btnAdvanceStatus.setText("Iniciar Preparo");
-                    break;
-                case "PREPARING":
-                    colorRes = R.color.status_preparing;
-                    btnAdvanceStatus.setText("Enviar para Entrega");
-                    break;
-                case "DELIVERING":
-                    colorRes = R.color.status_delivering;
-                    btnAdvanceStatus.setText("Confirmar Entrega");
-                    break;
-                case "COMPLETED":
-                    colorRes = R.color.status_completed;
-                    btnAdvanceStatus.setVisibility(View.GONE);
-                    btnCancelOrder.setVisibility(View.GONE);
-                    break;
-                case "CANCELLED":
-                    colorRes = R.color.status_cancelled;
-                    btnAdvanceStatus.setVisibility(View.GONE);
-                    btnCancelOrder.setVisibility(View.GONE);
-                    break;
-                default:
-                    colorRes = R.color.status_pending;
-                    break;
+        private void setupStatusButton(AdminOrder order) {
+            String nextStatus = getNextStatus(order.getStatus());
+            if (nextStatus != null) {
+                btnUpdateStatus.setText("Marcar como " + nextStatus);
+                btnUpdateStatus.setOnClickListener(v ->
+                        statusChangeListener.onStatusChange(order.getOrderId(), nextStatus));
+                btnUpdateStatus.setVisibility(View.VISIBLE);
+            } else {
+                btnUpdateStatus.setVisibility(View.GONE);
             }
-
-            chipStatus.setChipBackgroundColorResource(colorRes);
         }
 
         private String getNextStatus(String currentStatus) {
@@ -137,23 +106,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                     return "COMPLETED";
                 default:
                     return null;
-            }
-        }
-
-        private String getStatusDisplayText(String status) {
-            switch (status) {
-                case "PENDING":
-                    return "Pendente";
-                case "PREPARING":
-                    return "Em Preparo";
-                case "DELIVERING":
-                    return "Em Entrega";
-                case "COMPLETED":
-                    return "Concluído";
-                case "CANCELLED":
-                    return "Cancelado";
-                default:
-                    return status;
             }
         }
     }

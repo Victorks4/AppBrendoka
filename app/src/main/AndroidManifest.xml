@@ -58,6 +58,10 @@
         <activity
             android:name=".GerenciarProdutosActivity"
             android:exported="false" />
+        <activity
+            android:name=".OrderManagementActivity"
+            android:exported="false">
+        </activity>
     </application>
 
 </manifest>

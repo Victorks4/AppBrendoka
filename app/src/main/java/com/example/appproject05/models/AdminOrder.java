@@ -1,50 +1,98 @@
 package com.example.appproject05.models;
 
-import java.util.Date;
+import java.util.List;
 
 public class AdminOrder {
     private String orderId;
     private String userId;
-    private String status; // PENDING, PREPARING, DELIVERING, COMPLETED, CANCELLED
-    private double total;
-    private Date createdAt;
-    private String deliveryAddress;
+    private List<CartItem> items;
+    private double subtotal;
+    private double deliveryFee;
+    private String address;
     private String paymentMethod;
+    private String status;
+    private long orderDate;
 
+    // Construtor vazio necessário para o Firebase
     public AdminOrder() {
-        // Construtor vazio necessário para o Firebase
-    }
-
-    public AdminOrder(String orderId, String userId, String status, double total,
-                      Date createdAt, String deliveryAddress, String paymentMethod) {
-        this.orderId = orderId;
-        this.userId = userId;
-        this.status = status;
-        this.total = total;
-        this.createdAt = createdAt;
-        this.deliveryAddress = deliveryAddress;
-        this.paymentMethod = paymentMethod;
+        // Requerido pelo Firebase
     }
 
     // Getters e Setters
-    public String getOrderId() { return orderId; }
-    public void setOrderId(String orderId) { this.orderId = orderId; }
+    public String getOrderId() {
+        return orderId;
+    }
 
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getUserId() {
+        return userId;
+    }
 
-    public double getTotal() { return total; }
-    public void setTotal(double total) { this.total = total; }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+    public List<CartItem> getItems() {
+        return items;
+    }
 
-    public String getDeliveryAddress() { return deliveryAddress; }
-    public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
+    public void setItems(List<CartItem> items) {
+        this.items = items;
+    }
 
-    public String getPaymentMethod() { return paymentMethod; }
-    public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
+    public double getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public double getDeliveryFee() {
+        return deliveryFee;
+    }
+
+    public void setDeliveryFee(double deliveryFee) {
+        this.deliveryFee = deliveryFee;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public long getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(long orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    // Método auxiliar para calcular o total
+    public double getTotal() {
+        return subtotal + deliveryFee;
+    }
 }

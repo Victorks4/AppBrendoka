@@ -64,7 +64,8 @@ public class AdminPanelActivity extends AppCompatActivity {
         });
 
         cardGerenciarPedidos.setOnClickListener(v -> {
-            // TODO: Implementar navegação para tela de pedidos
+            Intent intent = new Intent(AdminPanelActivity.this, OrderManagementActivity.class);
+            startActivity(intent);
         });
 
         cardGerenciarUsuarios.setOnClickListener(v -> {
