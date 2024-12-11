@@ -75,20 +75,18 @@
             android:layout_marginTop="16dp">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAdvanceStatus"
-                android:layout_width="0dp"
+                android:id="@+id/btnViewOrder"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:text="Acompanhar"
-                style="@style/Widget.MaterialComponents.Button"/>
+                android:text="Visualizar"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancelOrder"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cancelar"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                android:text="Cancelar" />
         </LinearLayout>
 
     </LinearLayout>
