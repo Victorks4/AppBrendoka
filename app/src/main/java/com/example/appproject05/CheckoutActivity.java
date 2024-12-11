@@ -1,13 +1,14 @@
 package com.example.appproject05;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.appproject05.models.Address;
 import com.example.appproject05.models.CartItem;
 import com.example.appproject05.utils.CartManager;
 import com.google.android.material.button.MaterialButton;
@@ -18,7 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CheckoutActivity extends AppCompatActivity implements CartManager.CartListener {
+    private static final int REQUEST_CHANGE_ADDRESS = 200;
     private TextView txtSubtotal, txtDelivery, txtTotal;
     private TextView addressTitle, addressDetails;
     private RadioGroup paymentOptions;
@@ -36,7 +37,6 @@ public class CheckoutActivity extends AppCompatActivity implements CartManager.C
     private double subtotal = 0.0;
     private double deliveryFee = 5.0;
     private List<CartItem> cartItems;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,8 @@ public class CheckoutActivity extends AppCompatActivity implements CartManager.C
 
     private void setupListeners() {
         btnChangeAddress.setOnClickListener(v -> {
-            Toast.makeText(this, "Selecionar endereço", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, AddressSelectionActivity.class);
+            startActivityForResult(intent, REQUEST_CHANGE_ADDRESS);
         });
 
         paymentOptions.setOnCheckedChangeListener((group, checkedId) -> {
@@ -96,19 +97,55 @@ public class CheckoutActivity extends AppCompatActivity implements CartManager.C
     private void loadDefaultAddress() {
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
-            db.collection("users").document(currentUser.getUid())
-                    .get()
-                    .addOnSuccessListener(document -> {
-                        if (document.exists()) {
-                            String address = document.getString("endereco");
-                            if (address != null) {
-                                addressDetails.setText(address);
+            DatabaseReference userRef = FirebaseDatabase.getInstance()
+                    .getReference("usuarios")
+                    .child(currentUser.getUid());
+
+            userRef.child("enderecos").orderByChild("default").equalTo(true)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                Address defaultAddress = snapshot.getValue(Address.class);
+                                if (defaultAddress != null) {
+                                    updateSelectedAddress(defaultAddress);
+                                    break;
+                                }
                             }
                         }
-                    })
-                    .addOnFailureListener(e -> showError("Erro ao carregar endereço: " + e.getMessage()));
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Toast.makeText(CheckoutActivity.this,
+                                    "Erro ao carregar endereço padrão",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
     }
+
+    private void updateSelectedAddress(Address address) {
+        if (address != null) {
+            addressTitle.setText(address.getLabel());
+            addressDetails.setText(
+                    address.getStreet() + ", " +
+                            address.getNeighborhood() + " - " +
+                            address.getCityState()
+            );
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CHANGE_ADDRESS && resultCode == RESULT_OK) {
+            Address selectedAddress = (Address) data.getSerializableExtra("selected_address");
+            if (selectedAddress != null) {
+                updateSelectedAddress(selectedAddress);
+            }
+        }
+    }
+
     private void processOrder() {
         showLoading(true);
         FirebaseUser currentUser = auth.getCurrentUser();
@@ -124,9 +161,6 @@ public class CheckoutActivity extends AppCompatActivity implements CartManager.C
         }
 
         String userId = currentUser.getUid();
-        Log.d("CheckoutDebug", "Buscando dados do usuário no Realtime Database: " + userId);
-
-        // Usar Realtime Database ao invés de Firestore
         DatabaseReference userRef = FirebaseDatabase.getInstance()
                 .getReference("usuarios")
                 .child(userId);
@@ -138,14 +172,11 @@ public class CheckoutActivity extends AppCompatActivity implements CartManager.C
                     String customerName = dataSnapshot.child("nome").getValue(String.class);
                     String customerPhone = dataSnapshot.child("telefone").getValue(String.class);
 
-                    Log.d("CheckoutDebug", "Dados encontrados - Nome: " + customerName + ", Telefone: " + customerPhone);
-
                     if (customerName == null || customerPhone == null) {
                         showError("Dados do cliente incompletos");
                         return;
                     }
 
-                    // Criar objeto do pedido
                     Map<String, Object> orderData = new HashMap<>();
                     orderData.put("userId", userId);
                     orderData.put("customerName", customerName);
@@ -159,11 +190,9 @@ public class CheckoutActivity extends AppCompatActivity implements CartManager.C
                     orderData.put("deliveryFee", deliveryFee);
                     orderData.put("total", subtotal + deliveryFee);
 
-                    // Salvar pedido no Firestore
                     db.collection("orders")
                             .add(orderData)
                             .addOnSuccessListener(documentReference -> {
-                                // Atualizar o ID do pedido após criação
                                 documentReference.update("orderId", documentReference.getId());
 
                                 cartManager.clearCart()
@@ -185,14 +214,10 @@ public class CheckoutActivity extends AppCompatActivity implements CartManager.C
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e("CheckoutDebug", "Erro ao buscar dados: ", databaseError.toException());
                 showError("Erro ao buscar dados do usuário: " + databaseError.getMessage());
             }
         });
     }
-
-
-
 
     @Override
     public void onCartUpdated(List<CartItem> items, double total) {

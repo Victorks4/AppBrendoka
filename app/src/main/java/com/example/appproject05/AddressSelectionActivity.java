@@ -2,7 +2,8 @@ package com.example.appproject05;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,6 +12,14 @@ import com.example.appproject05.adapters.AddressAdapter;
 import com.example.appproject05.models.Address;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +29,27 @@ public class AddressSelectionActivity extends AppCompatActivity implements Addre
     private AddressAdapter adapter;
     private List<Address> addresses;
     private MaterialButton btnAddAddress;
+    private FirebaseAuth auth;
+    private DatabaseReference addressesRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_address_selection);
+
+        // Inicializar Firebase
+        auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "Usuário não autenticado", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        addressesRef = FirebaseDatabase.getInstance().getReference("usuarios")
+                .child(currentUser.getUid())
+                .child("enderecos");
+
         initViews();
         setupRecyclerView();
         loadAddresses();
@@ -47,10 +72,26 @@ public class AddressSelectionActivity extends AppCompatActivity implements Addre
     }
 
     private void loadAddresses() {
-        addresses.clear();
-        addresses.add(new Address("Casa", "Rua A, 123", "Centro", "São Paulo - SP", "Apto 101", true));
-        addresses.add(new Address("Trabalho", "Rua B, 456", "Jardins", "São Paulo - SP", "", false));
-        adapter.notifyDataSetChanged();
+        addressesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                addresses.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Address address = snapshot.getValue(Address.class);
+                    if (address != null) {
+                        address.setUid(snapshot.getKey());
+                        addresses.add(address);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(AddressSelectionActivity.this,
+                        "Erro ao carregar endereços", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void startAddAddress() {
@@ -75,8 +116,15 @@ public class AddressSelectionActivity extends AppCompatActivity implements Addre
 
     @Override
     public void onAddressDelete(Address address) {
-        addresses.remove(address);
-        adapter.notifyDataSetChanged();
+        if (address.getUid() != null) {
+            addressesRef.child(address.getUid()).removeValue()
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(this, "Endereço removido", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this, "Erro ao remover endereço", Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 
     @Override

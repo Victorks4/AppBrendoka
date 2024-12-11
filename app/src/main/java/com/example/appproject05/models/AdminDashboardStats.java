@@ -1,44 +1,106 @@
 package com.example.appproject05.models;
 
+import java.util.Date;
+
+/**
+ * Represents statistical data for the admin dashboard
+ * Tracks daily and monthly order and revenue information
+ */
 public class AdminDashboardStats {
-    private int ordersToday;
-    private double revenueToday;
-    private double ordersGrowth;
-    private double revenueGrowth;
-    private int totalProducts;
-    private int pendingOrders;
+    // Daily metrics
+    private int dailyOrderCount;
+    private double dailyRevenue;
+    private double dailyOrderGrowthPercentage;
 
+    // Monthly metrics
+    private int monthlyOrderCount;
+    private double monthlyRevenue;
+    private double monthlyOrderGrowthPercentage;
+
+    // Timestamp for data collection
+    private Date timestamp;
+
+    // Constructor
     public AdminDashboardStats() {
-        // Construtor vazio necessário para o Firebase
+        this.timestamp = new Date();
     }
 
-    public AdminDashboardStats(int ordersToday, double revenueToday,
-                               double ordersGrowth, double revenueGrowth,
-                               int totalProducts, int pendingOrders) {
-        this.ordersToday = ordersToday;
-        this.revenueToday = revenueToday;
-        this.ordersGrowth = ordersGrowth;
-        this.revenueGrowth = revenueGrowth;
-        this.totalProducts = totalProducts;
-        this.pendingOrders = pendingOrders;
+    // Getters and Setters
+    public int getDailyOrderCount() {
+        return dailyOrderCount;
     }
 
-    // Getters e Setters
-    public int getOrdersToday() { return ordersToday; }
-    public void setOrdersToday(int ordersToday) { this.ordersToday = ordersToday; }
+    public void setDailyOrderCount(int dailyOrderCount) {
+        this.dailyOrderCount = dailyOrderCount;
+    }
 
-    public double getRevenueToday() { return revenueToday; }
-    public void setRevenueToday(double revenueToday) { this.revenueToday = revenueToday; }
+    public double getDailyRevenue() {
+        return dailyRevenue;
+    }
 
-    public double getOrdersGrowth() { return ordersGrowth; }
-    public void setOrdersGrowth(double ordersGrowth) { this.ordersGrowth = ordersGrowth; }
+    public void setDailyRevenue(double dailyRevenue) {
+        this.dailyRevenue = dailyRevenue;
+    }
 
-    public double getRevenueGrowth() { return revenueGrowth; }
-    public void setRevenueGrowth(double revenueGrowth) { this.revenueGrowth = revenueGrowth; }
+    public double getDailyOrderGrowthPercentage() {
+        return dailyOrderGrowthPercentage;
+    }
 
-    public int getTotalProducts() { return totalProducts; }
-    public void setTotalProducts(int totalProducts) { this.totalProducts = totalProducts; }
+    public void setDailyOrderGrowthPercentage(double dailyOrderGrowthPercentage) {
+        this.dailyOrderGrowthPercentage = dailyOrderGrowthPercentage;
+    }
 
-    public int getPendingOrders() { return pendingOrders; }
-    public void setPendingOrders(int pendingOrders) { this.pendingOrders = pendingOrders; }
+    public int getMonthlyOrderCount() {
+        return monthlyOrderCount;
+    }
+
+    public void setMonthlyOrderCount(int monthlyOrderCount) {
+        this.monthlyOrderCount = monthlyOrderCount;
+    }
+
+    public double getMonthlyRevenue() {
+        return monthlyRevenue;
+    }
+
+    public void setMonthlyRevenue(double monthlyRevenue) {
+        this.monthlyRevenue = monthlyRevenue;
+    }
+
+    public double getMonthlyOrderGrowthPercentage() {
+        return monthlyOrderGrowthPercentage;
+    }
+
+    public void setMonthlyOrderGrowthPercentage(double monthlyOrderGrowthPercentage) {
+        this.monthlyOrderGrowthPercentage = monthlyOrderGrowthPercentage;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    /**
+     * Calculate daily order growth percentage
+     * @param previousDayOrderCount Previous day's order count
+     */
+    public void calculateDailyOrderGrowth(int previousDayOrderCount) {
+        if (previousDayOrderCount > 0) {
+            this.dailyOrderGrowthPercentage =
+                    ((double)(dailyOrderCount - previousDayOrderCount) / previousDayOrderCount) * 100;
+        } else {
+            this.dailyOrderGrowthPercentage = 100; // First day or no previous orders
+        }
+    }
+
+    /**
+     * Calculate monthly order growth percentage
+     * @param previousMonthOrderCount Previous month's order count
+     */
+    public void calculateMonthlyOrderGrowth(int previousMonthOrderCount) {
+        if (previousMonthOrderCount > 0) {
+            this.monthlyOrderGrowthPercentage =
+                    ((double)(monthlyOrderCount - previousMonthOrderCount) / previousMonthOrderCount) * 100;
+        } else {
+            this.monthlyOrderGrowthPercentage = 100; // First month or no previous orders
+        }
+    }
 }
