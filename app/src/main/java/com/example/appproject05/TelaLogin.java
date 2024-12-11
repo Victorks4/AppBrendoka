@@ -3,21 +3,15 @@ package com.example.appproject05;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class TelaLogin extends AppCompatActivity {
-    private TextInputEditText edtEmail;
-    private TextInputEditText edtSenha;
-    private MaterialButton btnEntrar;
-    private MaterialButton btnEsqueceuSenha;
-    private MaterialButton btnCadastrar;
-
-    // Referência ao FirebaseAuth
+    private TextInputEditText edtEmail, edtSenha;
+    private MaterialButton btnEntrar, btnEsqueceuSenha, btnCadastrar;
     private FirebaseAuth auth;
 
     @Override
@@ -25,17 +19,39 @@ public class TelaLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_login);
 
-        // Inicializar FirebaseAuth
+        // Inicializar Firebase Auth
         auth = FirebaseAuth.getInstance();
 
-        // Inicializar componentes
+        // Verificar se usuário já está logado
+        verificarSessaoAtiva();
+
+        initViews();
+        setupListeners();
+    }
+
+    private void verificarSessaoAtiva() {
+        FirebaseUser usuarioAtual = auth.getCurrentUser();
+        if (usuarioAtual != null) {
+            // Verificar se é o email de admin
+            if (usuarioAtual.getEmail().equals("admin@teste.com")) {
+                // Redirecionar para painel admin
+                redirecionarParaPainelAdmin();
+            } else {
+                // Redirecionar para tela principal de usuário normal
+                redirecionarParaTelaPrincipal();
+            }
+        }
+    }
+
+    private void initViews() {
         edtEmail = findViewById(R.id.edtEmailLogin);
         edtSenha = findViewById(R.id.edtSenhaLogin);
         btnEntrar = findViewById(R.id.btnEntrar);
         btnEsqueceuSenha = findViewById(R.id.btnEsqueceuSenha);
         btnCadastrar = findViewById(R.id.btnCadastrar);
+    }
 
-        // Configurar listeners
+    private void setupListeners() {
         btnEntrar.setOnClickListener(v -> {
             if (validarCampos()) {
                 String email = edtEmail.getText().toString().trim();
@@ -43,12 +59,9 @@ public class TelaLogin extends AppCompatActivity {
 
                 // Verificar se é o administrador
                 if (email.equals("admin@teste.com") && senha.equals("admin123")) {
-                    // Redirecionar para a tela de administrador
-                    Intent intent = new Intent(TelaLogin.this, AdminPanelActivity.class);
-                    startActivity(intent);
-                    finish();
+                    redirecionarParaPainelAdmin();
                 } else {
-                    // Realizar login com Firebase
+                    // Login com Firebase
                     loginUsuario(email, senha);
                 }
             }
@@ -70,14 +83,26 @@ public class TelaLogin extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Login bem-sucedido
-                        Intent intent = new Intent(TelaLogin.this, TelaPrincipal.class);
-                        startActivity(intent);
-                        finish();
+                        redirecionarParaTelaPrincipal();
                     } else {
                         // Falha no login
-                        Toast.makeText(TelaLogin.this, "Erro ao fazer login: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(TelaLogin.this,
+                                "Erro ao fazer login: " + task.getException().getMessage(),
+                                Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+
+    private void redirecionarParaTelaPrincipal() {
+        Intent intent = new Intent(TelaLogin.this, TelaPrincipal.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void redirecionarParaPainelAdmin() {
+        Intent intent = new Intent(TelaLogin.this, AdminPanelActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private boolean validarCampos() {
@@ -88,10 +113,12 @@ public class TelaLogin extends AppCompatActivity {
             edtEmail.setError("Digite seu email");
             return false;
         }
+
         if (senha.isEmpty()) {
             edtSenha.setError("Digite sua senha");
             return false;
         }
+
         return true;
     }
 }

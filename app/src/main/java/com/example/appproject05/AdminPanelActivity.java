@@ -13,8 +13,10 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.appproject05.models.AdminDashboardStats;
 import com.example.appproject05.utils.AdminDashboardManager;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -25,6 +27,7 @@ public class AdminPanelActivity extends AppCompatActivity {
     private MaterialCardView cardGerenciarPedidos;
     private MaterialCardView cardConfiguracoes;
     private FloatingActionButton fabAddProduct;
+    private MaterialButton btnSair; // Botão de logout
 
     // Novas referências para ações rápidas
     private LinearLayout btnAddProduto;
@@ -38,12 +41,16 @@ public class AdminPanelActivity extends AppCompatActivity {
 
     private AdminDashboardManager dashboardManager;
     private NumberFormat currencyFormatter;
+    private FirebaseAuth auth; // Adicionar referência ao FirebaseAuth
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_admin_panel);
+
+            // Inicializar Firebase Auth
+            auth = FirebaseAuth.getInstance();
 
             // Inicializar formatador de moeda
             currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
@@ -102,6 +109,9 @@ public class AdminPanelActivity extends AppCompatActivity {
         cardConfiguracoes = findViewById(R.id.cardConfiguracoes);
         fabAddProduct = findViewById(R.id.fabAddProduct);
 
+        // Inicializar botão de sair
+        btnSair = findViewById(R.id.btnSair);
+
         // Inicializar views de ações rápidas
         btnAddProduto = findViewById(R.id.btnAddProduto);
         btnVerPedidos = findViewById(R.id.btnVerPedidos);
@@ -141,6 +151,9 @@ public class AdminPanelActivity extends AppCompatActivity {
             intent.putExtra("action", "add");
             startActivity(intent);
         });
+
+        // Adicionar listener para botão de sair
+        btnSair.setOnClickListener(v -> deslogarConta());
     }
 
     private void setupQuickActionListeners() {
@@ -162,6 +175,20 @@ public class AdminPanelActivity extends AppCompatActivity {
             Intent intent = new Intent(AdminPanelActivity.this, RelatoriosActivity.class);
             startActivity(intent);
         });
+    }
+
+    private void deslogarConta() {
+        // Deslogar do Firebase
+        auth.signOut();
+
+        // Redirecionar para tela de login
+        Intent intent = new Intent(this, TelaLogin.class);
+        // Limpar todas as activities anteriores
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+
+        // Encerrar a activity atual
+        finish();
     }
 
     @Override

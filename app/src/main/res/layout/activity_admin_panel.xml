@@ -406,7 +406,17 @@
                             android:layout_height="24dp"
                             android:src="@drawable/ic_arrow_forward"/>
                     </LinearLayout>
+
                 </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSair"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sair"
+                    android:textColor="@color/error"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_marginTop="16dp"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

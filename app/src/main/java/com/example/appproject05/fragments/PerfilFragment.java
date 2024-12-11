@@ -2,18 +2,16 @@ package com.example.appproject05.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
-
-import com.example.appproject05.AddressSelectionActivity;
+import com.example.appproject05.AddAddressActivity;
 import com.example.appproject05.EditarPerfilActivity;
 import com.example.appproject05.R;
+import com.example.appproject05.TelaLogin;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,13 +22,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class PerfilFragment extends Fragment {
-
     private FirebaseAuth auth;
     private DatabaseReference database;
-    private TextView tvNomePerfil;
-    private TextView tvEmailPerfil;
-    private TextView tvTelefone;
-    private TextView tvCep;
+    private TextView tvNomePerfil, tvEmailPerfil, tvTelefone, tvCep;
+    private MaterialButton btnSair; // Botão de logout
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,10 +36,7 @@ public class PerfilFragment extends Fragment {
         database = FirebaseDatabase.getInstance().getReference("usuarios");
 
         // Inicializando as referências
-        tvNomePerfil = view.findViewById(R.id.txtNomePerfil);
-        tvEmailPerfil = view.findViewById(R.id.txtEmailPerfil);
-        tvTelefone = view.findViewById(R.id.tvTelefoneValor);
-        tvCep = view.findViewById(R.id.tvCepValor);
+        initViews(view);
 
         // Configurar os botões
         setupButtons(view);
@@ -53,6 +45,14 @@ public class PerfilFragment extends Fragment {
         carregarDadosEmTempoReal();
 
         return view;
+    }
+
+    private void initViews(View view) {
+        tvNomePerfil = view.findViewById(R.id.txtNomePerfil);
+        tvEmailPerfil = view.findViewById(R.id.txtEmailPerfil);
+        tvTelefone = view.findViewById(R.id.tvTelefoneValor);
+        tvCep = view.findViewById(R.id.tvCepValor);
+        btnSair = view.findViewById(R.id.btnSair); // Botão de logout
     }
 
     private void setupButtons(View view) {
@@ -66,7 +66,7 @@ public class PerfilFragment extends Fragment {
         });
 
         btnGerenciarEnderecos.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), AddressSelectionActivity.class);
+            Intent intent = new Intent(getActivity(), AddAddressActivity.class);
             startActivity(intent);
         });
 
@@ -77,15 +77,33 @@ public class PerfilFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         });
+
+        // Configurar botão de logout
+        btnSair.setOnClickListener(v -> {
+            deslogarConta();
+        });
+    }
+
+    private void deslogarConta() {
+        // Deslogar do Firebase
+        auth.signOut();
+
+        // Redirecionar para tela de login
+        Intent intent = new Intent(getActivity(), TelaLogin.class);
+        // Limpar todas as activities anteriores
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+
+        // Encerrar a activity atual
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
     private void carregarDadosEmTempoReal() {
         FirebaseUser usuarioAtual = auth.getCurrentUser();
         if (usuarioAtual == null) {
             tvNomePerfil.setText("Usuário não logado");
-            tvEmailPerfil.setText("");
-            tvTelefone.setText("");
-            tvCep.setText("");
             return;
         }
 
@@ -103,22 +121,17 @@ public class PerfilFragment extends Fragment {
                     tvEmailPerfil.setText(email != null ? email : "Email não encontrado");
                     tvTelefone.setText(formatarTelefone(telefone));
                     tvCep.setText(formatarCep(cep));
-                } else {
-                    tvNomePerfil.setText("Perfil não encontrado");
-                    tvEmailPerfil.setText("");
-                    tvTelefone.setText("Telefone não encontrado");
-                    tvCep.setText("CEP não encontrado");
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e("PerfilFragment", "Erro ao ouvir mudanças no banco de dados", databaseError.toException());
-                Toast.makeText(getActivity(), "Erro ao carregar perfil: " + databaseError.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Erro ao carregar dados: " + databaseError.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
 
+    // Métodos de formatação existentes (formatarTelefone, formatarCep)
     private String formatarTelefone(String telefone) {
         if (telefone != null && telefone.length() == 11) {
             return String.format("(%s) %s-%s",
