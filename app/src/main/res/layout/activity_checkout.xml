@@ -93,59 +93,53 @@
                 android:id="@+id/payment_options"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:checkedButton="@+id/radio_credit"
-                >
+                android:layout_marginBottom="24dp">
 
-                <com.google.android.material.card.MaterialCardView
+                <!-- Cartão de Crédito -->
+                <RadioButton
+                    android:id="@+id/radio_credit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="Cartão de Crédito"
+                    android:background="@drawable/radio_button_background"
+                    android:padding="16dp"
                     android:layout_marginBottom="8dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="8dp">
+                    android:button="@null"
+                    android:drawableStart="@drawable/ic_credit_card"
+                    android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
+                    android:drawablePadding="16dp"
+                    android:elevation="2dp"/>
 
-                    <RadioButton
-                        android:id="@+id/radio_credit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_credit_card"
-                        android:drawablePadding="16dp"
-                        android:padding="16dp"
-                        android:text="Cartão de Crédito" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
+                <!-- PIX -->
+                <RadioButton
+                    android:id="@+id/radio_pix"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="PIX"
+                    android:background="@drawable/radio_button_background"
+                    android:padding="16dp"
                     android:layout_marginBottom="8dp"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="8dp">
+                    android:button="@null"
+                    android:drawableStart="@drawable/ic_pix"
+                    android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
+                    android:drawablePadding="16dp"
+                    android:elevation="2dp"/>
 
-                    <RadioButton
-                        android:id="@+id/radio_pix"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:text="PIX"
-                        android:drawableStart="@drawable/ic_pix"
-                        android:drawablePadding="16dp"/>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
+                <!-- Dinheiro -->
+                <RadioButton
+                    android:id="@+id/radio_money"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="8dp">
+                    android:text="Dinheiro"
+                    android:background="@drawable/radio_button_background"
+                    android:padding="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:button="@null"
+                    android:drawableStart="@drawable/ic_money"
+                    android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
+                    android:drawablePadding="16dp"
+                    android:elevation="2dp"/>
 
-                    <RadioButton
-                        android:id="@+id/radio_money"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:text="Dinheiro"
-                        android:drawableStart="@drawable/ic_money"
-                        android:drawablePadding="16dp"/>
-                </com.google.android.material.card.MaterialCardView>
             </RadioGroup>
 
             <!-- Nova Seção de Aviso de Segurança -->

@@ -9,6 +9,8 @@ import java.util.List;
 public class Order implements Serializable {
     private String orderId;
     private String userId;
+    private String customerName;    // Nome do cliente
+    private String customerPhone;   // Telefone do cliente
     private List<CartItem> items;
     private double subtotal;
     private double deliveryFee;
@@ -37,6 +39,27 @@ public class Order implements Serializable {
                 FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
         addStatusHistory(status, "Pedido criado");
         calculateTotals();
+    }
+
+    // Getters e Setters para os novos campos
+    @PropertyName("customerName")
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    @PropertyName("customerName")
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    @PropertyName("customerPhone")
+    public String getCustomerPhone() {
+        return customerPhone;
+    }
+
+    @PropertyName("customerPhone")
+    public void setCustomerPhone(String customerPhone) {
+        this.customerPhone = customerPhone;
     }
 
     // Método para atualizar o status
@@ -95,7 +118,7 @@ public class Order implements Serializable {
         public void setObservation(String observation) { this.observation = observation; }
     }
 
-    // Getters e Setters
+    // Getters e Setters existentes
     @PropertyName("orderId")
     public String getOrderId() { return orderId; }
 

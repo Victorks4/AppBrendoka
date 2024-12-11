@@ -1,6 +1,7 @@
 package com.example.appproject05.adapters;
 
 import android.content.res.ColorStateList;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,9 @@ import com.example.appproject05.models.Order;
 import com.example.appproject05.models.OrderStatus;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -85,24 +89,29 @@ public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.Or
         }
 
         void bind(Order order) {
-            orderId.setText("Pedido #" + order.getOrderId());
+            // ID e Data do Pedido
+            String displayId = order.getOrderId() != null ? order.getOrderId().substring(0, 8) : "N/A";
+            orderId.setText("Pedido #" + displayId);
             orderDate.setText(dateFormat.format(new Date(order.getOrderDate())));
 
-            // Configura o chip de status
-            chipStatus.setText(order.getStatus().getLabel());
+            // Status do Pedido
+            OrderStatus status = order.getStatus();
+            chipStatus.setText(status.getLabel());
             chipStatus.setChipBackgroundColor(ColorStateList.valueOf(
-                    ContextCompat.getColor(itemView.getContext(), getStatusColor(order.getStatus()))));
+                    ContextCompat.getColor(itemView.getContext(), getStatusColor(status))));
 
             // Carrega informações do cliente
             loadCustomerInfo(order.getUserId());
 
-            // Lista de itens
+            // Lista de Itens
             StringBuilder itemsText = new StringBuilder();
-            for (CartItem item : order.getItems()) {
-                itemsText.append(String.format("%dx %s - R$ %.2f\n",
-                        item.getQuantity(),
-                        item.getProductName(),
-                        item.getTotal()));
+            if (order.getItems() != null) {
+                for (CartItem item : order.getItems()) {
+                    itemsText.append(String.format(Locale.getDefault(), "%dx %s - R$ %.2f\n",
+                            item.getQuantity(),
+                            item.getProductName(),
+                            item.getTotal()));
+                }
             }
             items.setText(itemsText.toString().trim());
 
@@ -111,22 +120,61 @@ public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.Or
             deliveryAddress.setText("Endereço: " + order.getAddress());
             paymentMethod.setText("Pagamento: " + order.getPaymentMethod());
 
+            // Observações (se houver)
+            if (order.getNotes() != null && !order.getNotes().isEmpty()) {
+                String currentText = items.getText().toString();
+                items.setText(currentText + "\n\nObservações: " + order.getNotes());
+            }
+
             // Configuração dos botões
             setupButtons(order);
         }
-
         private void loadCustomerInfo(String userId) {
-            db.collection("usuarios").document(userId)
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            String nome = documentSnapshot.getString("nome");
-                            String telefone = documentSnapshot.getString("telefone");
-                            customerInfo.setText(String.format("Cliente: %s\nTelefone: %s",
-                                    nome != null ? nome : "Nome não disponível",
-                                    telefone != null ? telefone : "Telefone não disponível"));
+            if (userId == null || userId.isEmpty()) {
+                customerInfo.setText("Cliente: Não identificado");
+                return;
+            }
+
+            // Mostra um texto de carregamento
+            customerInfo.setText("Carregando informações do cliente...");
+
+            // Usando Realtime Database ao invés do Firestore
+            DatabaseReference database = FirebaseDatabase.getInstance().getReference("usuarios");
+            database.child(userId).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult().exists()) {
+                    DataSnapshot snapshot = task.getResult();
+                    String nome = snapshot.child("nome").getValue(String.class);
+                    String telefone = snapshot.child("telefone").getValue(String.class);
+
+                    // Log para debug
+                    Log.d("AdminOrderAdapter", "Cliente encontrado - Nome: " + nome + ", Telefone: " + telefone);
+
+                    // Atualiza o objeto Order com as informações do cliente
+                    Order currentOrder = orders.get(getAdapterPosition());
+                    currentOrder.setCustomerName(nome);
+                    currentOrder.setCustomerPhone(telefone);
+
+                    // Formatação das informações para exibição
+                    String infoCliente = String.format("Cliente: %s\nTelefone: %s",
+                            nome != null ? nome : "Nome não disponível",
+                            telefone != null ? telefone : "Telefone não disponível");
+
+                    // Atualiza a UI na thread principal
+                    itemView.post(() -> {
+                        if (customerInfo != null) {
+                            customerInfo.setVisibility(View.VISIBLE);
+                            customerInfo.setText(infoCliente);
                         }
                     });
+                } else {
+                    String errorMessage = task.getException() != null ?
+                            task.getException().getMessage() : "Erro desconhecido";
+                    Log.e("AdminOrderAdapter", "Erro ao buscar cliente: " + errorMessage);
+
+                    itemView.post(() ->
+                            customerInfo.setText("Cliente: Informações não encontradas"));
+                }
+            });
         }
 
         private void setupButtons(Order order) {

@@ -1,25 +1,18 @@
 package com.example.appproject05.utils;
 
+import com.example.appproject05.models.CartItem;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.example.appproject05.models.CartItem;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-/**
- * Gerenciador do carrinho de compras usando Firebase Realtime Database
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class CartManager {
-    private static final String CART_PATH = "users/%s/cart";
-    private DatabaseReference cartRef;
+    private FirebaseFirestore db;
     private FirebaseUser currentUser;
     private List<CartItem> cartItems = new ArrayList<>();
     private CartListener cartListener;
@@ -30,79 +23,96 @@ public class CartManager {
     }
 
     public CartManager() {
+        db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
-            String cartPath = String.format(CART_PATH, currentUser.getUid());
-            cartRef = FirebaseDatabase.getInstance().getReference(cartPath);
+            listenToCartChanges();
         }
     }
 
     public void setCartListener(CartListener listener) {
         this.cartListener = listener;
-        if (cartRef != null) {
+        if (currentUser != null) {
             listenToCartChanges();
         }
     }
 
     private void listenToCartChanges() {
-        cartRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                cartItems.clear();
-                double total = 0;
-
-                for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
-                    CartItem item = itemSnapshot.getValue(CartItem.class);
-                    if (item != null) {
-                        cartItems.add(item);
-                        total += item.getTotal();
+        db.collection("carts")
+                .document(currentUser.getUid())
+                .collection("items")
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        if (cartListener != null) {
+                            cartListener.onError(error.getMessage());
+                        }
+                        return;
                     }
-                }
 
-                if (cartListener != null) {
-                    cartListener.onCartUpdated(cartItems, total);
-                }
-            }
+                    if (value != null) {
+                        cartItems.clear();
+                        double total = 0;
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                if (cartListener != null) {
-                    cartListener.onError(error.getMessage());
-                }
-            }
-        });
+                        for (DocumentSnapshot doc : value.getDocuments()) {
+                            CartItem item = doc.toObject(CartItem.class);
+                            if (item != null) {
+                                cartItems.add(item);
+                                total += item.getTotal();
+                            }
+                        }
+
+                        if (cartListener != null) {
+                            cartListener.onCartUpdated(cartItems, total);
+                        }
+                    }
+                });
     }
 
     public Task<Void> addItem(CartItem item) {
-        if (currentUser == null || cartRef == null) {
-            return null;
-        }
+        if (currentUser == null) return null;
 
-        return cartRef.child(item.getProductId()).setValue(item);
+        return db.collection("carts")
+                .document(currentUser.getUid())
+                .collection("items")
+                .document(item.getProductId())
+                .set(item);
     }
 
     public Task<Void> updateItemQuantity(String productId, int newQuantity) {
-        if (currentUser == null || cartRef == null) {
-            return null;
-        }
+        if (currentUser == null) return null;
 
-        return cartRef.child(productId).child("quantity").setValue(newQuantity);
+        return db.collection("carts")
+                .document(currentUser.getUid())
+                .collection("items")
+                .document(productId)
+                .update("quantity", newQuantity);
     }
 
     public Task<Void> removeItem(String productId) {
-        if (currentUser == null || cartRef == null) {
-            return null;
-        }
+        if (currentUser == null) return null;
 
-        return cartRef.child(productId).removeValue();
+        return db.collection("carts")
+                .document(currentUser.getUid())
+                .collection("items")
+                .document(productId)
+                .delete();
     }
 
     public Task<Void> clearCart() {
-        if (currentUser == null || cartRef == null) {
-            return null;
-        }
+        if (currentUser == null) return null;
 
-        return cartRef.removeValue();
+        // Deletar todos os documentos na subcoleção items
+        return db.collection("carts")
+                .document(currentUser.getUid())
+                .collection("items")
+                .get()
+                .continueWithTask(task -> {
+                    List<Task<Void>> deleteTasks = new ArrayList<>();
+                    for (DocumentSnapshot document : task.getResult()) {
+                        deleteTasks.add(document.getReference().delete());
+                    }
+                    return Tasks.whenAll(deleteTasks);
+                });
     }
 
     public List<CartItem> getCartItems() {

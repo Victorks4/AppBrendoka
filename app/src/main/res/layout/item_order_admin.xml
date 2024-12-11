@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
-    android:layout_marginVertical="4dp"
+    android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="2dp">
 
@@ -15,72 +14,77 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Cabeçalho do Pedido -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_marginBottom="8dp">
 
             <TextView
                 android:id="@+id/txtOrderId"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:textSize="16sp"/>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"/>
-
+                android:textColor="@color/white"/>
         </LinearLayout>
 
+        <!-- Data do Pedido -->
         <TextView
             android:id="@+id/txtOrderDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginBottom="8dp"
+            android:textColor="?android:textColorSecondary"/>
 
         <!-- Informações do Cliente -->
         <TextView
             android:id="@+id/txtCustomerInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginBottom="8dp"/>
 
-        <!-- Lista de Itens -->
+        <!-- Itens do Pedido -->
         <TextView
             android:id="@+id/txtItems"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginBottom="8dp"/>
 
+        <!-- Total -->
         <TextView
             android:id="@+id/txtOrderTotal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginBottom="8dp"/>
 
+        <!-- Endereço de Entrega -->
         <TextView
             android:id="@+id/txtDeliveryAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginBottom="8dp"/>
 
+        <!-- Método de Pagamento -->
         <TextView
             android:id="@+id/txtPaymentMethod"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"/>
+            android:layout_marginBottom="16dp"/>
 
+        <!-- Botões de Ação -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp">
+            android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAdvanceStatus"
@@ -88,17 +92,16 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
-                style="@style/Widget.MaterialComponents.Button"/>
+                style="@style/Widget.Material3.Button.OutlinedButton"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancelOrder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cancelar"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                app:strokeColor="@color/error"
+                android:textColor="@color/error"/>
         </LinearLayout>
-
     </LinearLayout>
-
 </com.google.android.material.card.MaterialCardView>
