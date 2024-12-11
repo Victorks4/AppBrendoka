@@ -38,16 +38,22 @@ public class CheckoutActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        btnChangeAddress.setOnClickListener(v -> {
-            // TODO: Abrir seleção de endereço
-            Toast.makeText(this, "Trocar endereço", Toast.LENGTH_SHORT).show();
-        });
-
+        // Garantir que sempre tenha uma forma de pagamento selecionada
         paymentOptions.setOnCheckedChangeListener((group, checkedId) -> {
-            // Atualizar UI baseado na forma de pagamento selecionada
+            // Se nenhuma opção estiver selecionada, selecione o cartão de crédito como padrão
+            if (checkedId == -1) {
+                paymentOptions.check(R.id.radio_credit);
+            }
+
+            // Mostrar diálogo de troco para pagamento em dinheiro
             if (checkedId == R.id.radio_money) {
                 showChangeInputDialog();
             }
+        });
+
+        btnChangeAddress.setOnClickListener(v -> {
+            // TODO: Abrir seleção de endereço
+            Toast.makeText(this, "Trocar endereço", Toast.LENGTH_SHORT).show();
         });
 
         btnPlaceOrder.setOnClickListener(v -> {
