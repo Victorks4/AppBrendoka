@@ -4,12 +4,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.example.appproject05.R;
-import com.example.appproject05.models.Order;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.chip.Chip;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.appproject05.R;
+import com.example.appproject05.models.Order;
+import com.example.appproject05.models.OrderStatus;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -17,23 +18,27 @@ import java.util.Locale;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
     private List<Order> orders;
-    private OnOrderActionListener listener;
+    private OrderClickListener listener;
+    private SimpleDateFormat dateFormat;
 
-    public interface OnOrderActionListener {
-        void onAdvanceStatus(Order order);
+    public interface OrderClickListener {
+        void onOrderClick(Order order);
         void onCancelOrder(Order order);
+        void onAdvanceStatus(Order order);
     }
 
-    public OrderAdapter(List<Order> orders, OnOrderActionListener listener) {
+    public OrderAdapter(List<Order> orders, OrderClickListener listener) {
         this.orders = orders;
         this.listener = listener;
+        this.dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
     }
 
     @NonNull
     @Override
     public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order, parent, false);
-        return new OrderViewHolder(v);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_order, parent, false);
+        return new OrderViewHolder(view);
     }
 
     @Override
@@ -52,16 +57,16 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     }
 
     class OrderViewHolder extends RecyclerView.ViewHolder {
-        TextView txtOrderId;
-        Chip chipStatus;
-        TextView txtOrderDate;
-        TextView txtOrderTotal;
-        TextView txtDeliveryAddress;
-        TextView txtPaymentMethod;
-        MaterialButton btnAdvanceStatus;
-        MaterialButton btnCancelOrder;
+        private TextView txtOrderId;
+        private Chip chipStatus;
+        private TextView txtOrderDate;
+        private TextView txtOrderTotal;
+        private TextView txtDeliveryAddress;
+        private TextView txtPaymentMethod;
+        private MaterialButton btnAdvanceStatus;
+        private MaterialButton btnCancelOrder;
 
-        public OrderViewHolder(@NonNull View itemView) {
+        OrderViewHolder(View itemView) {
             super(itemView);
             txtOrderId = itemView.findViewById(R.id.txtOrderId);
             chipStatus = itemView.findViewById(R.id.chipStatus);
@@ -71,39 +76,76 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             txtPaymentMethod = itemView.findViewById(R.id.txtPaymentMethod);
             btnAdvanceStatus = itemView.findViewById(R.id.btnAdvanceStatus);
             btnCancelOrder = itemView.findViewById(R.id.btnCancelOrder);
-        }
 
-        public void bind(Order order) {
-            txtOrderId.setText("Pedido #" + order.getOrderId());
-            chipStatus.setText(order.getStatus());
-
-            // Formatar data
-            String formattedDate;
-            try {
-                long timestamp = order.getOrderDate();
-                Date date = new Date(timestamp);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-                formattedDate = sdf.format(date);
-            } catch (Exception e) {
-                formattedDate = "Data não disponível";
-            }
-            txtOrderDate.setText(formattedDate);
-
-            txtOrderTotal.setText(String.format(Locale.getDefault(), "Total: R$ %.2f", order.getTotal()));
-            txtDeliveryAddress.setText("Endereço: " + order.getAddress());
-            txtPaymentMethod.setText("Pagamento: " + order.getPaymentMethod());
+            itemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && listener != null) {
+                    listener.onOrderClick(orders.get(position));
+                }
+            });
 
             btnAdvanceStatus.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onAdvanceStatus(order);
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && listener != null) {
+                    listener.onAdvanceStatus(orders.get(position));
                 }
             });
 
             btnCancelOrder.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onCancelOrder(order);
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && listener != null) {
+                    listener.onCancelOrder(orders.get(position));
                 }
             });
+        }
+
+        void bind(Order order) {
+            txtOrderId.setText("Pedido #" + order.getOrderId());
+            chipStatus.setText(order.getStatus().getLabel());
+            txtOrderDate.setText("Data: " + dateFormat.format(new Date(order.getOrderDate())));
+            txtOrderTotal.setText(String.format(Locale.getDefault(), "Total: R$ %.2f", order.getTotal()));
+            txtDeliveryAddress.setText("Endereço: " + order.getAddress());
+            txtPaymentMethod.setText("Pagamento: " + order.getPaymentMethod());
+
+            // Configurar visibilidade dos botões baseado no status
+            boolean showButtons = order.getStatus() != OrderStatus.DELIVERED &&
+                    order.getStatus() != OrderStatus.CANCELLED;
+            btnAdvanceStatus.setVisibility(showButtons ? View.VISIBLE : View.GONE);
+            btnCancelOrder.setVisibility(showButtons ? View.VISIBLE : View.GONE);
+
+            // Configurar cor do chip baseado no status
+            switch (order.getStatus()) {
+                case PENDING:
+                    chipStatus.setChipBackgroundColorResource(R.color.status_pending);
+                    break;
+                case CONFIRMED:
+                case PREPARING:
+                    chipStatus.setChipBackgroundColorResource(R.color.status_preparing);
+                    break;
+                case READY:
+                case OUT_FOR_DELIVERY:
+                    chipStatus.setChipBackgroundColorResource(R.color.status_delivering);
+                    break;
+                case DELIVERED:
+                    chipStatus.setChipBackgroundColorResource(R.color.status_delivered);
+                    break;
+                case CANCELLED:
+                    chipStatus.setChipBackgroundColorResource(R.color.status_cancelled);
+                    break;
+            }
+
+            // Configurar texto do botão baseado no status
+            if (order.getStatus() == OrderStatus.PENDING) {
+                btnAdvanceStatus.setText("Confirmar Pedido");
+            } else if (order.getStatus() == OrderStatus.CONFIRMED) {
+                btnAdvanceStatus.setText("Iniciar Preparo");
+            } else if (order.getStatus() == OrderStatus.PREPARING) {
+                btnAdvanceStatus.setText("Marcar como Pronto");
+            } else if (order.getStatus() == OrderStatus.READY) {
+                btnAdvanceStatus.setText("Enviar para Entrega");
+            } else if (order.getStatus() == OrderStatus.OUT_FOR_DELIVERY) {
+                btnAdvanceStatus.setText("Confirmar Entrega");
+            }
         }
     }
 }

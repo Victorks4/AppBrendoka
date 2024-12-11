@@ -88,17 +88,7 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
             if (txtPrecoProduto != null) {
                 txtPrecoProduto.setText(String.format("R$ %.2f", product.getPrice()));
             }
-            if (imgProduto != null) {
-                // Verificar imagem
-                if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
-                    // TODO: Implementar carregamento de imagem
-                    imgProduto.setImageResource(R.drawable.ic_product);
-                } else if (product.getImageResource() != 0) {
-                    imgProduto.setImageResource(product.getImageResource());
-                } else {
-                    imgProduto.setImageResource(R.drawable.ic_product);
-                }
-            }
+
         }
     }
 }
