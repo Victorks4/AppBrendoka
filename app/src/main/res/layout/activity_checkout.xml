@@ -129,6 +129,39 @@
                 </com.google.android.material.card.MaterialCardView>
             </RadioGroup>
 
+            <!-- Nova Seção de Aviso de Segurança -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="#FFF3E0">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Segurança na Entrega"
+                        android:textStyle="bold"
+                        android:textColor="#FF6D00"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="O pagamento só será efetuado após a entrega do produto. Garantimos sua segurança e satisfação total."
+                        android:textColor="#BF360C"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- Resumo do Pedido -->
             <TextView
                 android:layout_width="wrap_content"
@@ -138,6 +171,8 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
+            <!-- Resto do código anterior permanece igual -->
+            <!-- (the rest of the previous code remains the same) -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
