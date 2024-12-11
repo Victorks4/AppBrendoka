@@ -62,6 +62,21 @@
             android:name=".OrderManagementActivity"
             android:exported="false">
         </activity>
+        <activity
+            android:name=".RelatoriosActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".DataSelectionActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".DataSelectionActivity"
+            android:exported="false">
+        </activity>
+
     </application>
 
 </manifest>

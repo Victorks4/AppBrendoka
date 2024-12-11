@@ -4,24 +4,32 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import com.example.appproject05.models.AdminDashboardStats;
 import com.example.appproject05.utils.AdminDashboardManager;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.text.NumberFormat;
 import java.util.Locale;
 
 public class AdminPanelActivity extends AppCompatActivity {
-    private static final String TAG = "AdminPanelActivity";
-
     private Toolbar toolbar;
     private MaterialCardView cardGerenciarProdutos;
     private MaterialCardView cardGerenciarPedidos;
     private MaterialCardView cardConfiguracoes;
     private FloatingActionButton fabAddProduct;
+
+    // Novas referências para ações rápidas
+    private LinearLayout btnAddProduto;
+    private LinearLayout btnVerPedidos;
+    private LinearLayout btnRelatorios;
 
     private TextView txtPedidosHoje;
     private TextView txtFaturamentoHoje;
@@ -33,24 +41,58 @@ public class AdminPanelActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         try {
+            super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_admin_panel);
 
-            // Initialize formatting
+            // Inicializar formatador de moeda
             currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-
-            // Initialize dashboard manager
-            dashboardManager = new AdminDashboardManager();
 
             initViews();
             setupToolbar();
             setupClickListeners();
-            loadDashboardData();
-
+            setupQuickActionListeners();
+            setupDashboardManager();
         } catch (Exception e) {
-            Log.e(TAG, "Error in onCreate: " + e.getMessage(), e);
+            e.printStackTrace();
+            Log.e("AdminPanelActivity", "Error in onCreate: " + e.getMessage());
         }
+    }
+
+    private void setupDashboardManager() {
+        dashboardManager = new AdminDashboardManager();
+        loadDashboardData();
+    }
+
+    private void loadDashboardData() {
+        dashboardManager.fetchDashboardStats(new AdminDashboardManager.DashboardStatsCallback() {
+            @Override
+            public void onStatsRetrieved(AdminDashboardStats stats) {
+                runOnUiThread(() -> {
+                    // Atualizar pedidos de hoje
+                    txtPedidosHoje.setText(String.valueOf(stats.getDailyOrderCount()));
+
+                    // Atualizar faturamento de hoje
+                    txtFaturamentoHoje.setText(currencyFormatter.format(stats.getDailyRevenue()));
+
+                    // Atualizar crescimento de pedidos
+                    txtPedidosCrescimento.setText(String.format("%.1f%%", stats.getDailyOrderGrowthPercentage()));
+                    txtPedidosCrescimento.setTextColor(
+                            stats.getDailyOrderGrowthPercentage() >= 0 ?
+                                    getResources().getColor(R.color.success) :
+                                    getResources().getColor(R.color.error)
+                    );
+
+                    // Atualizar crescimento de faturamento
+                    txtFaturamentoCrescimento.setText(String.format("%.1f%%", stats.getDailyRevenueGrowthPercentage()));
+                    txtFaturamentoCrescimento.setTextColor(
+                            stats.getDailyRevenueGrowthPercentage() >= 0 ?
+                                    getResources().getColor(R.color.success) :
+                                    getResources().getColor(R.color.error)
+                    );
+                });
+            }
+        });
     }
 
     private void initViews() {
@@ -59,6 +101,11 @@ public class AdminPanelActivity extends AppCompatActivity {
         cardGerenciarPedidos = findViewById(R.id.cardGerenciarPedidos);
         cardConfiguracoes = findViewById(R.id.cardConfiguracoes);
         fabAddProduct = findViewById(R.id.fabAddProduct);
+
+        // Inicializar views de ações rápidas
+        btnAddProduto = findViewById(R.id.btnAddProduto);
+        btnVerPedidos = findViewById(R.id.btnVerPedidos);
+        btnRelatorios = findViewById(R.id.btnRelatorios);
 
         txtPedidosHoje = findViewById(R.id.txtPedidosHoje);
         txtFaturamentoHoje = findViewById(R.id.txtFaturamentoHoje);
@@ -81,11 +128,12 @@ public class AdminPanelActivity extends AppCompatActivity {
         });
 
         cardGerenciarPedidos.setOnClickListener(v -> {
-            // TODO: Implementar navegação para tela de pedidos
+            Intent intent = new Intent(AdminPanelActivity.this, OrderManagementActivity.class);
+            startActivity(intent);
         });
 
         cardConfiguracoes.setOnClickListener(v -> {
-            // TODO: Implementar navegação para configurações
+            Toast.makeText(this, "Configurações em desenvolvimento", Toast.LENGTH_SHORT).show();
         });
 
         fabAddProduct.setOnClickListener(v -> {
@@ -95,24 +143,24 @@ public class AdminPanelActivity extends AppCompatActivity {
         });
     }
 
-    private void loadDashboardData() {
-        dashboardManager.fetchDashboardStats(stats -> {
-            // Update UI on main thread
-            runOnUiThread(() -> {
-                // Pedidos hoje
-                txtPedidosHoje.setText(String.valueOf(stats.getDailyOrderCount()));
-                txtPedidosCrescimento.setText(
-                        String.format("%.1f%%", stats.getDailyOrderGrowthPercentage())
-                );
+    private void setupQuickActionListeners() {
+        // Ação rápida: Adicionar Produto
+        btnAddProduto.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminPanelActivity.this, GerenciarProdutosActivity.class);
+            intent.putExtra("action", "add");
+            startActivity(intent);
+        });
 
-                // Faturamento hoje
-                txtFaturamentoHoje.setText(
-                        currencyFormatter.format(stats.getDailyRevenue())
-                );
-                txtFaturamentoCrescimento.setText(
-                        String.format("%.1f%%", stats.getMonthlyOrderGrowthPercentage())
-                );
-            });
+        // Ação rápida: Ver Pedidos
+        btnVerPedidos.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminPanelActivity.this, OrderManagementActivity.class);
+            startActivity(intent);
+        });
+
+        // Ação rápida: Relatórios
+        btnRelatorios.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminPanelActivity.this, RelatoriosActivity.class);
+            startActivity(intent);
         });
     }
 
