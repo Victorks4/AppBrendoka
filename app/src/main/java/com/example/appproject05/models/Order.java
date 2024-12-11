@@ -11,13 +11,14 @@ public class Order {
     private String paymentMethod;
     private String status;
     private long orderDate;
-
+    private String userId;
     public Order(List<CartItem> items, String address, String paymentMethod) {
         this.items = items;
         this.address = address;
         this.paymentMethod = paymentMethod;
         this.status = "PENDING";
         this.orderDate = System.currentTimeMillis();
+        this.orderId = "ORD" + this.orderDate;
         calculateTotals();
     }
 
@@ -44,4 +45,11 @@ public class Order {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     public long getOrderDate() { return orderDate; }
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 }

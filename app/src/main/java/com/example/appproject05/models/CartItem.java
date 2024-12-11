@@ -8,6 +8,11 @@ public class CartItem {
     private int quantity;
     private String notes;
 
+    // Construtor vazio necessário para o Firebase
+    public CartItem() {
+        // Construtor vazio requerido para deserialização do Firebase
+    }
+
     public CartItem(String productId, String productName, String bakeryName, double price, int quantity) {
         this.productId = productId;
         this.productName = productName;
@@ -17,6 +22,7 @@ public class CartItem {
         this.notes = "";
     }
 
+    // Getters e Setters
     public String getProductId() {
         return productId;
     }
@@ -65,7 +71,6 @@ public class CartItem {
         this.notes = notes;
     }
 
-    // Getters and Setters
     public double getTotal() {
         return price * quantity;
     }

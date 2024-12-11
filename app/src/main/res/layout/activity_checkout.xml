@@ -16,6 +16,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+
             <!-- Seção de Endereço -->
             <TextView
                 android:layout_width="wrap_content"
@@ -63,6 +64,21 @@
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <!-- Lista de Itens -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Itens do Pedido"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"/>
 
             <!-- Seção de Pagamento -->
             <TextView

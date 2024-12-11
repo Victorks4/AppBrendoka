@@ -25,8 +25,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment implements
         BannerAdapter.OnBannerClickListener,
-        CategoryAdapter.OnCategoryClickListener,
-        ProductAdapter.OnProductClickListener {
+        CategoryAdapter.OnCategoryClickListener{
 
     private ViewPager2 bannerViewPager;
     private TabLayout bannerIndicator;  // Adicionada declaração aqui
@@ -121,8 +120,10 @@ public class HomeFragment extends Fragment implements
         products.add(new Product("3", "Bolo de Chocolate", "Bolo caseiro", 25.00, R.drawable.ic_cake));
         products.add(new Product("4", "Café Expresso", "Café premium", 3.50, R.drawable.ic_coffee));
 
-        ProductAdapter productAdapter = new ProductAdapter(products, this);
+        ProductAdapter productAdapter = new ProductAdapter(products); // Remove o this
         productsRecyclerView.setAdapter(productAdapter);
+
+
     }
 
     @Override
@@ -136,8 +137,4 @@ public class HomeFragment extends Fragment implements
         // Implementar filtro por categoria
     }
 
-    @Override
-    public void onProductClick(Product product) {
-        // Implementar navegação para detalhes do produto
-    }
-}
+   }

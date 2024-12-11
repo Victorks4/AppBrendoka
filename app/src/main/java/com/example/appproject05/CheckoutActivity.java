@@ -6,13 +6,21 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.appproject05.models.Order;
+import com.example.appproject05.utils.CartManager;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import java.util.UUID;
 
 public class CheckoutActivity extends AppCompatActivity {
     private TextView txtSubtotal, txtDelivery, txtTotal;
     private TextView addressTitle, addressDetails;
     private RadioGroup paymentOptions;
     private MaterialButton btnChangeAddress, btnPlaceOrder;
+    private CartManager cartManager;
+    private DatabaseReference ordersRef;
     private double subtotal = 0.0;
     private double deliveryFee = 5.0;
 
@@ -22,6 +30,8 @@ public class CheckoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_checkout);
 
         initViews();
+        setupFirebase();
+        setupCartManager();
         setupListeners();
         loadOrderData();
     }
@@ -37,35 +47,36 @@ public class CheckoutActivity extends AppCompatActivity {
         btnPlaceOrder = findViewById(R.id.btn_place_order);
     }
 
-    private void setupListeners() {
-        // Garantir que sempre tenha uma forma de pagamento selecionada
-        paymentOptions.setOnCheckedChangeListener((group, checkedId) -> {
-            // Se nenhuma opção estiver selecionada, selecione o cartão de crédito como padrão
-            if (checkedId == -1) {
-                paymentOptions.check(R.id.radio_credit);
-            }
+    private void setupFirebase() {
+        ordersRef = FirebaseDatabase.getInstance().getReference("orders");
+    }
 
-            // Mostrar diálogo de troco para pagamento em dinheiro
+    private void setupCartManager() {
+        cartManager = new CartManager();
+    }
+
+    private void setupListeners() {
+        btnChangeAddress.setOnClickListener(v -> {
+            // Implementar seleção de endereço
+            Toast.makeText(this, "Selecionar endereço", Toast.LENGTH_SHORT).show();
+        });
+
+        paymentOptions.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.radio_money) {
                 showChangeInputDialog();
             }
         });
 
-        btnChangeAddress.setOnClickListener(v -> {
-            // TODO: Abrir seleção de endereço
-            Toast.makeText(this, "Trocar endereço", Toast.LENGTH_SHORT).show();
-        });
-
         btnPlaceOrder.setOnClickListener(v -> {
             if (validateOrder()) {
-                placeOrder();
+                processOrder();
             }
         });
     }
 
     private void loadOrderData() {
-        // TODO: Carregar dados do carrinho
         subtotal = getIntent().getDoubleExtra("subtotal", 0.0);
+        deliveryFee = getIntent().getDoubleExtra("delivery_fee", 5.0);
         updateTotals();
         loadDefaultAddress();
     }
@@ -84,7 +95,7 @@ public class CheckoutActivity extends AppCompatActivity {
     }
 
     private void showChangeInputDialog() {
-        // TODO: Mostrar dialog para troco
+        // TODO: Implementar diálogo para troco
         Toast.makeText(this, "Informar troco", Toast.LENGTH_SHORT).show();
     }
 
@@ -96,14 +107,52 @@ public class CheckoutActivity extends AppCompatActivity {
         return true;
     }
 
-    private void placeOrder() {
-        // TODO: Processar pedido
-        Toast.makeText(this, "Pedido realizado com sucesso!", Toast.LENGTH_LONG).show();
-        finish();
+    private void processOrder() {
+        showLoading(true);
+
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String orderId = UUID.randomUUID().toString();
+
+        Order order = new Order(
+                cartManager.getCartItems(),
+                addressDetails.getText().toString(),
+                getSelectedPaymentMethod()
+        );
+        order.setOrderId(orderId);
+        order.setUserId(userId);
+
+        ordersRef.child(orderId).setValue(order)
+                .addOnSuccessListener(aVoid -> {
+                    cartManager.clearCart()
+                            .addOnSuccessListener(aVoid2 -> {
+                                Toast.makeText(this, "Pedido realizado com sucesso!", Toast.LENGTH_LONG).show();
+                                finish();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(this, "Erro ao limpar carrinho: " + e.getMessage(),
+                                        Toast.LENGTH_LONG).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Erro ao processar pedido: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                    showLoading(false);
+                });
+    }
+
+    private String getSelectedPaymentMethod() {
+        int selectedId = paymentOptions.getCheckedRadioButtonId();
+        if (selectedId == R.id.radio_credit) {
+            return "Cartão de Crédito";
+        } else if (selectedId == R.id.radio_pix) {
+            return "PIX";
+        } else {
+            return "Dinheiro";
+        }
     }
 
     private void showLoading(boolean show) {
-        // TODO: Implementar loading state
         btnPlaceOrder.setEnabled(!show);
+        // TODO: Implementar um ProgressBar se necessário
     }
 }

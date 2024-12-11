@@ -9,19 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.appproject05.R;
 import com.example.appproject05.models.Product;
+import com.example.appproject05.dialogs.AddToCartDialog;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
     private List<Product> products;
-    private OnProductClickListener listener;
 
-    public interface OnProductClickListener {
-        void onProductClick(Product product);
-    }
-
-    public ProductAdapter(List<Product> products, OnProductClickListener listener) {
+    public ProductAdapter(List<Product> products) {
         this.products = products;
-        this.listener = listener;
     }
 
     public void updateProducts(List<Product> newProducts) {
@@ -62,8 +57,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
             itemView.setOnClickListener(v -> {
                 int pos = getAdapterPosition();
-                if (pos != RecyclerView.NO_POSITION && listener != null) {
-                    listener.onProductClick(products.get(pos));
+                if (pos != RecyclerView.NO_POSITION) {
+                    showAddToCartDialog(products.get(pos));
                 }
             });
         }
@@ -73,6 +68,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             productDescription.setText(product.getDescription());
             productPrice.setText(String.format("R$ %.2f", product.getPrice()));
             productImage.setImageResource(product.getImageResource());
+        }
+
+        private void showAddToCartDialog(Product product) {
+            AddToCartDialog dialog = new AddToCartDialog(itemView.getContext(), product);
+            dialog.show();
         }
     }
 }

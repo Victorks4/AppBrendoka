@@ -49,6 +49,7 @@ dependencies {
     implementation libs.firebase.auth
     implementation libs.firebase.database
     implementation 'com.google.firebase:firebase-firestore:24.9.1'
+    implementation libs.swiperefreshlayout
 
     // Testes unitários e de UI
     testImplementation libs.junit

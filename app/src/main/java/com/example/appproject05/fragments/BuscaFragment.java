@@ -55,9 +55,7 @@ public class BuscaFragment extends Fragment {
 
     private void setupRecyclerView() {
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        productAdapter = new ProductAdapter(new ArrayList<>(), product -> {
-            // Implementar navegação para detalhes do produto
-        });
+        productAdapter = new ProductAdapter(new ArrayList<>()); // Remove o callback
         searchResultsRecyclerView.setAdapter(productAdapter);
     }
 
