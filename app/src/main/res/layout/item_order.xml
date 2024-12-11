@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
-    android:layout_marginVertical="4dp"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="2dp">
 
@@ -15,79 +15,70 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Cabeçalho do Pedido -->
+        <!-- Cabeçalho com ID e Status -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
 
             <TextView
-                android:id="@+id/txtOrderId"
+                android:id="@+id/txt_order_id"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textStyle="bold"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:text="Pedido #123"/>
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipStatus"
+            <View
+                android:id="@+id/order_status_indicator"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/circle_shape"/>
+
+            <TextView
+                android:id="@+id/txt_order_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"/>
+                android:text="Status"/>
+
         </LinearLayout>
 
-        <!-- Data do Pedido -->
-        <TextView
-            android:id="@+id/txtOrderDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="?android:textColorSecondary"/>
-
-        <!-- Total do Pedido -->
-        <TextView
-            android:id="@+id/txtOrderTotal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textStyle="bold"/>
-
-        <!-- Endereço de Entrega -->
-        <TextView
-            android:id="@+id/txtDeliveryAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
-
-        <!-- Método de Pagamento -->
-        <TextView
-            android:id="@+id/txtPaymentMethod"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"/>
-
-        <!-- Ações do Pedido -->
+        <!-- Data e Valor -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp">
+            android:layout_marginBottom="16dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnViewOrder"
+            <TextView
+                android:id="@+id/txt_order_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="?android:textColorSecondary"
+                android:text="01/01/2024 10:00"/>
+
+            <TextView
+                android:id="@+id/txt_order_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Visualizar"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                android:textStyle="bold"
+                android:text="R$ 0,00"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCancelOrder"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cancelar" />
         </LinearLayout>
+
+        <!-- Botão de Ação -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_next_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="Próximo Status"
+            style="@style/Widget.Material3.Button.TextButton"/>
 
     </LinearLayout>
 
