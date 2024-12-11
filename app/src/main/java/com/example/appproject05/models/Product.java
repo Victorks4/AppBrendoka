@@ -8,36 +8,21 @@ public class Product implements Serializable {
     private String description;
     private double price;
     private String category;
-    private int imageResource; // Adicionado para compatibilidade
+    private int imageResource;
     private String imageUrl;
     private boolean active;
     private long createdAt;
 
-    // Construtor vazio necessário para o Firebase
-    public Product() {
-        this.createdAt = System.currentTimeMillis();
-        this.active = true;
-    }
-
-    // Construtor para manter compatibilidade com código existente
-    public Product(String id, String name, String description, double price, int imageResource) {
+    // Construtor completo
+    public Product(String id, String name, String description, double price, String category, int imageResource, long createdAt, boolean active) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.imageResource = imageResource;
-        this.createdAt = System.currentTimeMillis();
-        this.active = true;
-    }
-
-    // Construtor para novos produtos com categoria
-    public Product(String name, String description, double price, String category) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
         this.category = category;
-        this.createdAt = System.currentTimeMillis();
-        this.active = true;
+        this.imageResource = imageResource;
+        this.createdAt = createdAt;
+        this.active = active;
     }
 
     // Getters e Setters

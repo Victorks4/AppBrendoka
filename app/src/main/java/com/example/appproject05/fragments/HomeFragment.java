@@ -20,6 +20,14 @@ import com.example.appproject05.adapters.ProductAdapter;
 import com.example.appproject05.models.BannerItem;
 import com.example.appproject05.models.Category;
 import com.example.appproject05.models.Product;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +91,7 @@ public class HomeFragment extends Fragment implements
     private void loadMockData() {
         loadMockBanners();
         loadMockCategories();
-        loadMockProducts();
+        loadProductsFromFirestore();
     }
 
     private void loadMockBanners() {
@@ -113,17 +121,35 @@ public class HomeFragment extends Fragment implements
         categoriesRecyclerView.setAdapter(categoryAdapter);
     }
 
-    private void loadMockProducts() {
-        List<Product> products = new ArrayList<>();
-        products.add(new Product("1", "Pão Francês", "Pão fresquinho tradicional", 0.50, R.drawable.ic_bread));
-        products.add(new Product("2", "Croissant", "Croissant folhado", 5.00, R.drawable.ic_bread));
-        products.add(new Product("3", "Bolo de Chocolate", "Bolo caseiro", 25.00, R.drawable.ic_cake));
-        products.add(new Product("4", "Café Expresso", "Café premium", 3.50, R.drawable.ic_coffee));
+    private void loadProductsFromFirestore() {
+        DatabaseReference productsRef = FirebaseDatabase.getInstance().getReference().child("products");
+        productsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Product> products = new ArrayList<>();
+                for (DataSnapshot productSnapshot : dataSnapshot.getChildren()) {
+                    String id = productSnapshot.getKey();
+                    String name = productSnapshot.child("name").getValue(String.class);
+                    String description = productSnapshot.child("description").getValue(String.class);
+                    double price = productSnapshot.child("price").getValue(Double.class);
+                    String category = productSnapshot.child("category").getValue(String.class);
+                    int imageResource = productSnapshot.child("imageResource").getValue(Integer.class);
+                    boolean active = productSnapshot.child("active").getValue(Boolean.class);
+                    long createdAt = productSnapshot.child("createdAt").getValue(Long.class);
 
-        ProductAdapter productAdapter = new ProductAdapter(products); // Remove o this
-        productsRecyclerView.setAdapter(productAdapter);
+                    if (active) {
+                        products.add(new Product(id, name, description, price, category, imageResource, createdAt, active));
+                    }
+                }
+                ProductAdapter productAdapter = new ProductAdapter(products);
+                productsRecyclerView.setAdapter(productAdapter);
+            }
 
-
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error
+            }
+        });
     }
 
     @Override

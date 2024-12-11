@@ -93,7 +93,16 @@ public class GerenciarProdutosActivity extends AppCompatActivity implements Prod
 
                     if (!name.isEmpty() && !description.isEmpty() && !priceStr.isEmpty()) {
                         double price = Double.parseDouble(priceStr);
-                        Product newProduct = new Product(name, description, price, category);
+                        Product newProduct = new Product(
+                                "", // id (vazio, será gerado pelo Firebase)
+                                name,
+                                description,
+                                price,
+                                category,
+                                0, // imageResource (valor padrão)
+                                System.currentTimeMillis(), // createdAt (timestamp atual)
+                                true // active (valor padrão)
+                        );
                         addProduct(newProduct);
                     }
                 })

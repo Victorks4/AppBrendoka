@@ -7,12 +7,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.appproject05.R;
 import com.example.appproject05.adapters.ProductAdapter;
 import com.example.appproject05.models.Product;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,13 +70,33 @@ public class BuscaFragment extends Fragment {
     }
 
     private void loadAllProducts() {
-        allProducts = new ArrayList<>();
-        // Adicionar produtos mock para teste
-        allProducts.add(new Product("1", "Pão Francês", "Pão fresquinho tradicional", 0.50, R.drawable.ic_bread));
-        allProducts.add(new Product("2", "Croissant", "Croissant folhado", 5.00, R.drawable.ic_bread));
-        allProducts.add(new Product("3", "Bolo de Chocolate", "Bolo caseiro", 25.00, R.drawable.ic_cake));
-        allProducts.add(new Product("4", "Café Expresso", "Café premium", 3.50, R.drawable.ic_coffee));
-        productAdapter.updateProducts(allProducts);
+        DatabaseReference productsRef = FirebaseDatabase.getInstance().getReference().child("products");
+        productsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                allProducts = new ArrayList<>();
+                for (DataSnapshot productSnapshot : dataSnapshot.getChildren()) {
+                    String id = productSnapshot.getKey();
+                    String name = productSnapshot.child("name").getValue(String.class);
+                    String description = productSnapshot.child("description").getValue(String.class);
+                    double price = productSnapshot.child("price").getValue(Double.class);
+                    String category = productSnapshot.child("category").getValue(String.class);
+                    int imageResource = productSnapshot.child("imageResource").getValue(Integer.class);
+                    boolean active = productSnapshot.child("active").getValue(Boolean.class);
+                    long createdAt = productSnapshot.child("createdAt").getValue(Long.class);
+
+                    if (active) {
+                        allProducts.add(new Product(id, name, description, price, category, imageResource, createdAt, active));
+                    }
+                }
+                productAdapter.updateProducts(allProducts);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error
+            }
+        });
     }
 
     private void filterProducts(String query) {
