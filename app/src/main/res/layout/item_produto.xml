@@ -11,7 +11,7 @@
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_product"
+        android:src="@drawable/iconecarrinho"
         android:contentDescription="Imagem do Produto"/>
 
     <LinearLayout
