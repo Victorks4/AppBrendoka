@@ -1,9 +1,13 @@
 package com.example.appproject05.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,10 +15,17 @@ import com.example.appproject05.R;
 import com.example.appproject05.adapters.OrderAdapter;
 import com.example.appproject05.models.Order;
 import com.example.appproject05.models.OrderStatus;
+import com.example.appproject05.utils.DogApi;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +46,7 @@ public class PedidosFragment extends Fragment implements OrderAdapter.OrderClick
         setupRecyclerView();
         setupTabLayout();
         loadOrders();
+        showDogImage(view);
 
         return view;
     }
@@ -135,5 +147,43 @@ public class PedidosFragment extends Fragment implements OrderAdapter.OrderClick
         // Intent intent = new Intent(getActivity(), OrderDetailsActivity.class);
         // intent.putExtra("orderId", order.getOrderId());
         // startActivity(intent);
+    }
+    private void showDogImage(View view) {
+        ImageView dogImageView = view.findViewById(R.id.dogImage);
+        dogImageView.setVisibility(View.GONE); // Ocultar a imagem por padrão
+
+        DogApi.fetchRandomDogImage(new DogApi.DogImageCallback() {
+            @Override
+            public void onImageUrlReceived(String imageUrl) {
+                if (isAdded() && getContext() != null) {
+                    Picasso.get()
+                            .load(imageUrl)
+                            .into(dogImageView, new Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    dogImageView.setVisibility(View.VISIBLE);
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Toast.makeText(getContext(),
+                                            "Erro ao carregar a imagem do cachorro",
+                                            Toast.LENGTH_SHORT).show();
+                                    Log.e("PedidosFragment", "Erro no carregamento da imagem", e);
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                if (isAdded() && getContext() != null) {
+                    Toast.makeText(getContext(),
+                            "Erro ao buscar imagem do cachorro",
+                            Toast.LENGTH_SHORT).show();
+                    Log.e("PedidosFragment", "Erro na busca da imagem", e);
+                }
+            }
+        });
     }
 }
