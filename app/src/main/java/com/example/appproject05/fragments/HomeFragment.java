@@ -76,7 +76,7 @@ public class HomeFragment extends Fragment implements
     }
 
     private void setupBakeryInfo() {
-        bakeryNameText.setText("Padaria do João");
+        bakeryNameText.setText("Dokabren");
         bakeryInfoText.setText("Aberto • 06:00 - 22:00");
     }
 
