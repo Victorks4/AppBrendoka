@@ -201,19 +201,11 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 👨‍💻 Autor
 
-**Seu Nome**
-- GitHub: [@seu-usuario](https://github.com/seu-usuario)
-- LinkedIn: [Seu LinkedIn](https://linkedin.com/in/seu-perfil)
-
 ## 🙏 Agradecimentos
 
 - Firebase pela plataforma de backend
 - Material Design pela biblioteca de componentes
 - Comunidade Android pelo suporte
-
-## 📞 Suporte
-
-Se você encontrar algum problema ou tiver dúvidas, abra uma [issue](https://github.com/seu-usuario/AppBrendoka/issues) no GitHub.
 
 ---
 
